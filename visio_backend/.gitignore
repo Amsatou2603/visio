@@ -1,0 +1,40 @@
+# =====================
+# DJANGO / PYTHON
+# =====================
+visio_backend/venv/
+visio_backend/__pycache__/
+visio_backend/**/__pycache__/
+visio_backend/**/*.pyc
+visio_backend/**/*.pyo
+visio_backend/*.sqlite3
+visio_backend/db.sqlite3
+visio_backend/.env
+visio_backend/media/
+visio_backend/staticfiles/
+visio_backend/*.log
+
+# =====================
+# REACT / NODE
+# =====================
+visio_frontend/node_modules/
+visio_frontend/build/
+visio_frontend/.env.local
+visio_frontend/.env.development.local
+visio_frontend/.env.test.local
+visio_frontend/.env.production.local
+visio_frontend/.env.production
+visio_frontend/npm-debug.log*
+visio_frontend/yarn-debug.log*
+visio_frontend/yarn-error.log*
+
+# =====================
+# SYSTÈME
+# =====================
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+.idea/
+.vscode/
+*.iml
