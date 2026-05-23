@@ -6,22 +6,18 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-visio-dev-key-change-in-prod-123456789')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-dev-key-123')
 
 DJANGO_ENV = os.environ.get('DJANGO_ENV', 'development')
-DEBUG = DJANGO_ENV == 'development'
+DEBUG = DJANGO_ENV != 'production'
 
+# ALLOWED_HOSTS
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-if os.environ.get('ALLOWED_HOSTS'):
-    ALLOWED_HOSTS += os.environ.get('ALLOWED_HOSTS', '').split(',')
+RENDER_HOST = os.environ.get('ALLOWED_HOSTS', '')
+if RENDER_HOST:
+    ALLOWED_HOSTS += RENDER_HOST.split(',')
 
-if DJANGO_ENV == 'production':
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = False  # Railway gère SSL
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-
-# Applications
+# Apps
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -30,13 +26,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
-    # Third party
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'django_filters',
-    # Local
     'users',
     'products',
     'orders',
@@ -83,6 +77,7 @@ if DJANGO_ENV == 'production':
         'default': dj_database_url.config(
             default=os.environ.get('DATABASE_URL'),
             conn_max_age=600,
+            ssl_require=True,
         )
     }
 else:
@@ -93,7 +88,6 @@ else:
         }
     }
 
-# Auth
 AUTH_USER_MODEL = 'users.User'
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -103,18 +97,15 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Internationalisation
 LANGUAGE_CODE = 'fr-fr'
 TIME_ZONE = 'Africa/Dakar'
 USE_I18N = True
 USE_TZ = True
 
-# Fichiers statiques
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Fichiers media (images produits)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -151,7 +142,14 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
 ]
-if os.environ.get('CORS_ALLOWED_ORIGINS'):
-    CORS_ALLOWED_ORIGINS += os.environ.get('CORS_ALLOWED_ORIGINS').split(',')
+CORS_EXTRA = os.environ.get('CORS_ALLOWED_ORIGINS', '')
+if CORS_EXTRA:
+    CORS_ALLOWED_ORIGINS += CORS_EXTRA.split(',')
 
 CORS_ALLOW_CREDENTIALS = True
+
+# Production
+if DJANGO_ENV == 'production':
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
