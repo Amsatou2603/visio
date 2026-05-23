@@ -12,10 +12,9 @@ DJANGO_ENV = os.environ.get('DJANGO_ENV', 'development')
 DEBUG = DJANGO_ENV != 'production'
 
 # ALLOWED_HOSTS
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-RENDER_HOST = os.environ.get('ALLOWED_HOSTS', '')
-if RENDER_HOST:
-    ALLOWED_HOSTS += RENDER_HOST.split(',')
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'visio-backend-sp1h.onrender.com']
+if os.environ.get('ALLOWED_HOSTS'):
+    ALLOWED_HOSTS += os.environ.get('ALLOWED_HOSTS', '').split(',')
 
 # Apps
 INSTALLED_APPS = [
@@ -31,6 +30,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'django_filters',
+    'cloudinary_storage',
+    'cloudinary',
     'users',
     'products',
     'orders',
@@ -102,14 +103,30 @@ TIME_ZONE = 'Africa/Dakar'
 USE_I18N = True
 USE_TZ = True
 
+# Fichiers statiques
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# Fichiers media
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Cloudinary
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', ''),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
+}
+
+# En production — Cloudinary pour les médias
+if DJANGO_ENV == 'production':
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 # DRF
 REST_FRAMEWORK = {
@@ -142,14 +159,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
 ]
-CORS_EXTRA = os.environ.get('CORS_ALLOWED_ORIGINS', '')
-if CORS_EXTRA:
-    CORS_ALLOWED_ORIGINS += CORS_EXTRA.split(',')
+if os.environ.get('CORS_ALLOWED_ORIGINS'):
+    CORS_ALLOWED_ORIGINS += os.environ.get('CORS_ALLOWED_ORIGINS', '').split(',')
 
 CORS_ALLOW_CREDENTIALS = True
-
-# Production
-if DJANGO_ENV == 'production':
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
