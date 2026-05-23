@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from datetime import timedelta
+# pyrefly: ignore [missing-import]
 import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -12,7 +13,13 @@ DEBUG = DJANGO_ENV == 'development'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 if os.environ.get('ALLOWED_HOSTS'):
-    ALLOWED_HOSTS += os.environ.get('ALLOWED_HOSTS').split(',')
+    ALLOWED_HOSTS += os.environ.get('ALLOWED_HOSTS', '').split(',')
+
+if DJANGO_ENV == 'production':
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = False  # Railway gère SSL
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 # Applications
 INSTALLED_APPS = [
