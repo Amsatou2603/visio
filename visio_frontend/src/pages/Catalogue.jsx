@@ -27,29 +27,35 @@ const Catalogue = () => {
     ordering: '-created_at',
   });
 
-  const fetchProducts = useCallback(async (page = 1, currentFilters = filters) => {
-  setLoading(true);
-  try {
-    const params = { page };
-    if (currentFilters.search) params.search = currentFilters.search;
-    if (currentFilters.category) params.category = currentFilters.category;
-    if (currentFilters.brand) params.brand = currentFilters.brand;
-    if (currentFilters.min_price) params.min_price = currentFilters.min_price;
-    if (currentFilters.max_price) params.max_price = currentFilters.max_price;
-    if (currentFilters.condition) params.condition = currentFilters.condition;
-    if (currentFilters.ordering) params.ordering = currentFilters.ordering;
+  const fetchProducts = useCallback(async (page = 1, currentFilters) => {
+    const f = currentFilters || filters;
+    setLoading(true);
+    try {
+      const params = { page };
+      if (f.search) params.search = f.search;
+      if (f.category) params.category = f.category;
+      if (f.brand) params.brand = f.brand;
+      if (f.min_price) params.min_price = f.min_price;
+      if (f.max_price) params.max_price = f.max_price;
+      if (f.condition) params.condition = f.condition;
+      if (f.ordering) params.ordering = f.ordering;
+      const res = await api.get('/products/', { params });
+      setProducts(res.data.results || res.data);
+      setTotalCount(res.data.count || 0);
+      setTotalPages(Math.ceil((res.data.count || 0) / 12));
+      setCurrentPage(page);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    const res = await api.get('/products/', { params });
-    setProducts(res.data.results || res.data);
-    setTotalCount(res.data.count || 0);
-    setTotalPages(Math.ceil((res.data.count || 0) / 12));
-    setCurrentPage(page);
-  } catch (err) {
-    console.error(err);
-  } finally {
-    setLoading(false);
-  }
-}, []);
+  useEffect(() => {
+    fetchProducts(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const fetchMeta = async () => {
@@ -68,30 +74,30 @@ const Catalogue = () => {
   }, []);
 
   useEffect(() => {
-  fetchProducts(1, filters);
+    fetchProducts(1, filters);
   }, []);
 
   const handleFilterChange = (key, value) => {
-  const newFilters = { ...filters, [key]: value };
-  setFilters(newFilters);
-  // Pour les selects (pas la recherche texte), fetch immédiat
-  if (key !== 'search') {
-    fetchProducts(1, newFilters);
-  }
+    const newFilters = { ...filters, [key]: value };
+    setFilters(newFilters);
+    // Pour les selects (pas la recherche texte), fetch immédiat
+    if (key !== 'search') {
+      fetchProducts(1, newFilters);
+    }
   };
 
   const handleSearchSubmit = (e) => {
-  e.preventDefault();
-  fetchProducts(1, filters);
+    e.preventDefault();
+    fetchProducts(1, filters);
   };
 
   const resetFilters = () => {
-  const empty = {
-    search: '', category: '', brand: '',
-    min_price: '', max_price: '', condition: '', ordering: '-created_at',
-  };
-  setFilters(empty);
-  fetchProducts(1, empty);
+    const empty = {
+      search: '', category: '', brand: '',
+      min_price: '', max_price: '', condition: '', ordering: '-created_at',
+    };
+    setFilters(empty);
+    fetchProducts(1, empty);
   };
 
   return (
@@ -266,11 +272,10 @@ const Catalogue = () => {
                             )}
                             <button
                               onClick={() => fetchProducts(page)}
-                              className={`w-9 h-9 rounded-lg text-sm font-medium transition-colors ${
-                                currentPage === page
+                              className={`w-9 h-9 rounded-lg text-sm font-medium transition-colors ${currentPage === page
                                   ? 'bg-primary-500 text-white'
                                   : 'bg-white border border-gray-200 hover:bg-gray-50'
-                              }`}
+                                }`}
                             >
                               {page}
                             </button>

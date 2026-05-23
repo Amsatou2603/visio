@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Store, User, Lock, Phone, MapPin, FileText, Tag } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
-import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 
 const steps = ['Compte', 'Boutique', 'Confirmation'];
 
 const RegisterSeller = () => {
-  const navigate = useNavigate();
-  const { login } = useAuth();
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -50,23 +47,23 @@ const RegisterSeller = () => {
   };
 
   const handleSubmit = async () => {
-  setLoading(true);
-  setErrors({});
-  try {
-    const res = await api.post('/auth/register-seller/', form);
-    // Stocker les tokens manuellement
-    localStorage.setItem('access_token', res.data.tokens.access);
-    localStorage.setItem('refresh_token', res.data.tokens.refresh);
-    localStorage.setItem('user', JSON.stringify(res.data.user));
-    // Rediriger vers le dashboard vendeur
-    window.location.href = '/seller-dashboard';
-  } catch (err) {
-    setErrors(err.response?.data || { detail: 'Erreur lors de l\'inscription.' });
-    setStep(0);
-  } finally {
-    setLoading(false);
-  }
-};
+    setLoading(true);
+    setErrors({});
+    try {
+      const res = await api.post('/auth/register-seller/', form);
+      // Stocker les tokens manuellement
+      localStorage.setItem('access_token', res.data.tokens.access);
+      localStorage.setItem('refresh_token', res.data.tokens.refresh);
+      localStorage.setItem('user', JSON.stringify(res.data.user));
+      // Rediriger vers le dashboard vendeur
+      window.location.href = '/seller-dashboard';
+    } catch (err) {
+      setErrors(err.response?.data || { detail: 'Erreur lors de l\'inscription.' });
+      setStep(0);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const inputStyle = (hasErr) => ({
     width: '100%', padding: '12px 16px 12px 44px',

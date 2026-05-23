@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Package, TrendingUp, ShoppingBag, DollarSign,
-  Plus, Edit, Trash2, Eye, Star, AlertCircle, CheckCircle
+  Plus, Edit, Trash2, Eye, Star, AlertCircle
 } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import Loader from '../components/Loader';
@@ -48,6 +48,7 @@ const SellerDashboard = () => {
     if (!isAuthenticated) { navigate('/login'); return; }
     if (user?.role !== 'seller' && !user?.is_staff) { navigate('/dashboard'); return; }
     fetchAll();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, user]);
 
   const fetchAll = async () => {
@@ -415,7 +416,6 @@ const SellerDashboard = () => {
               ].map(({ label, value }) => (
                 <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                   <span style={{ fontSize: 13, color: 'var(--text-secondary)', fontFamily: 'Orbitron', fontWeight: 700, fontSize: 11, letterSpacing: 0.5 }}>{label}</span>
-                  <span style={{ fontSize: 14, color: 'var(--text-primary)', fontFamily: 'Rajdhani', fontWeight: 600 }}>{value}</span>
                 </div>
               ))}
             </div>

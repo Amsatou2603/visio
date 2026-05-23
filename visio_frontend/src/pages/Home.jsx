@@ -41,7 +41,6 @@ const Home = () => {
   }, [featured.length]);
 
   // 3 cartes du deck en rotation
-  const deckCount = Math.min(featured.length, 6);
   const getDeckProduct = (offset) => {
     if (featured.length === 0) return null;
     return featured[(deckIndex + offset) % featured.length];
@@ -310,9 +309,9 @@ const Home = () => {
               {p0?.primary_image
                 ? <img src={p0.primary_image} alt={p0?.name} />
                 : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 64, flexDirection: 'column', gap: 10 }}>
-                    <span>📱</span>
-                    <span style={{ color: 'var(--neon-orange)', fontSize: 13, fontFamily: 'Orbitron', fontWeight: 700 }}>Voir les offres</span>
-                  </div>
+                  <span>📱</span>
+                  <span style={{ color: 'var(--neon-orange)', fontSize: 13, fontFamily: 'Orbitron', fontWeight: 700 }}>Voir les offres</span>
+                </div>
               }
               {p0 && (
                 <div className="deck-card-overlay">

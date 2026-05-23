@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Store, Package, Star, ExternalLink } from 'lucide-react';
+import { Search, Store, Package, Star } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import Loader from '../components/Loader';
 import api from '../services/api';
@@ -221,14 +221,15 @@ const Partenaires = () => {
                       Voir les produits
                     </Link>
                     {seller.whatsapp && (
-                        <a
-                            href={`https://wa.me/${seller.whatsapp.replace(/\D/g, '')}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn-secondary"
-                        >
-                            WhatsApp
-                        </a>
+                      <a
+                        href={`https://wa.me/${seller.whatsapp.replace(/\D/g, '')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-secondary"
+                        style={{ padding: '9px 12px', fontSize: 13 }}
+                      >
+                        WA
+                      </a>
                     )}
                   </div>
                 </div>
