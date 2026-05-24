@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from datetime import timedelta
+import logging
 # pyrefly: ignore [missing-import]
 import dj_database_url
 
@@ -10,6 +11,40 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-dev-key-123')
 
 DJANGO_ENV = os.environ.get('DJANGO_ENV', 'development')
 DEBUG = DJANGO_ENV != 'production'
+
+# Logging configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+    },
+}
 
 # ALLOWED_HOSTS
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'visio-backend-sp1h.onrender.com']
@@ -24,7 +59,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sitemaps',
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
@@ -37,7 +71,6 @@ INSTALLED_APPS = [
     'orders',
     'payments',
     'reviews',
-    'sitemaps.apps.SitemapsConfig',
 ]
 
 MIDDLEWARE = [
@@ -78,7 +111,7 @@ if DJANGO_ENV == 'production':
         'default': dj_database_url.config(
             default=os.environ.get('DATABASE_URL'),
             conn_max_age=600,
-            ssl_require=False,
+            conn_health_checks=True,
         )
     }
 else:
@@ -123,10 +156,21 @@ CLOUDINARY_STORAGE = {
 
 # En production — Cloudinary pour les médias
 if DJANGO_ENV == 'production':
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    # Only use Cloudinary if credentials are provided
+    if all([
+        os.environ.get('CLOUDINARY_CLOUD_NAME'),
+        os.environ.get('CLOUDINARY_API_KEY'),
+        os.environ.get('CLOUDINARY_API_SECRET')
+    ]):
+        DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    else:
+        # Fallback to local storage if Cloudinary not configured
+        logging.warning('Cloudinary credentials not found, using local media storage')
+    
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = False  # Render handles SSL
 
 # DRF
 REST_FRAMEWORK = {
