@@ -127,6 +127,60 @@ def load_fixtures():
     print(f"   - Marques: {Brand.objects.count()}")
     print(f"   - Produits: {Product.objects.count()}")
 
+def create_product_images():
+    """Crée les images pour les produits"""
+    from products.models import Product, ProductImage
+    
+    # Vérifier si des images existent déjà
+    if ProductImage.objects.exists():
+        print("ℹ️  Des images produits existent déjà")
+        return
+    
+    print("\n🖼️  Création des images produits...")
+    
+    # Mapping des produits vers leurs images Cloudinary
+    PRODUCT_IMAGES = {
+        'iphone-14-pro-max-256go': 'products/Apple_iPhone_14.jpg',
+        'samsung-galaxy-s24-ultra': 'products/Galaxy_s24_ultra.jpg',
+        'tecno-spark-20-pro': 'products/Techno_Spark_20.jpg',
+        'infinix-hot-40-pro': 'products/Infinix_Hot_40.jpg',
+        'samsung-galaxy-a55-5g': 'products/Samsung_Galaxy_A55.jpg',
+        'ipad-pro-12-9-m2-256go-wifi': 'products/ipad_pro_129.jpg',
+        'samsung-galaxy-tab-s9-fe': 'products/samsung_galaxy_a9.jpg',
+        'samsung-25w-chargeur-rapide-usb-c': 'products/Samsung_Chargeur_45W.jpg',
+        'airpods-pro-2eme-generation': 'products/Apple_Airpods_pro_2.jpg',
+        'iphone-13-128go-reconditionne': 'products/iphone_13.jpg',
+        'samsung-galaxy-z-flip-5': 'products/Samsung_Galaxy_Z_Flip5.jpg',
+        'tecno-camon-20-premier': 'products/techno_20.jpg',
+        'infinix-zero-30-5g': 'products/Infinix_not_40_pro.jpg',
+        'apple-magsafe-charger': 'products/_MagSafe.jpg',
+        'samsung-galaxy-buds-2-pro': 'products/buds_2_pro.jpg',
+        'power-bank-20000mah-tecno': 'products/Power_Bank_20000mAh.jpg',
+        'iphone-15-128go': 'products/Iphone_15_plus.jpg',
+        'samsung-galaxy-a15': 'products/Samsung_Galaxy_A15.jpg',
+        'ecouteurs-bluetooth-infinix': 'products/infinix_buds.jpg',
+        'cable-usb-c-samsung': 'products/cable_usb-c.jpg',
+    }
+    
+    created = 0
+    for slug, image_path in PRODUCT_IMAGES.items():
+        try:
+            product = Product.objects.get(slug=slug)
+            ProductImage.objects.create(
+                product=product,
+                image=image_path,
+                alt_text=product.name,
+                is_primary=True,
+                order=0
+            )
+            created += 1
+        except Product.DoesNotExist:
+            print(f"   ⚠️  Produit non trouvé: {slug}")
+        except Exception as e:
+            print(f"   ⚠️  Erreur pour {slug}: {e}")
+    
+    print(f"   ✅ {created} images créées")
+
 def main():
     print("="*70)
     print("🚀 INITIALISATION DE LA BASE DE DONNÉES")
@@ -144,6 +198,10 @@ def main():
     print("\n📦 Chargement des fixtures...")
     load_fixtures()
     
+    # Créer les images des produits
+    print("\n🖼️  Création des images produits...")
+    create_product_images()
+    
     print("\n" + "="*70)
     print("✅ INITIALISATION TERMINÉE")
     print("="*70)
@@ -151,6 +209,7 @@ def main():
     print("   1. Connectez-vous à /admin/ avec admin@visio.com")
     print("   2. Changez le mot de passe immédiatement")
     print("   3. Vérifiez que les produits sont visibles sur /api/products/")
+    print("   4. Vérifiez que les images s'affichent")
     print("="*70 + "\n")
 
 if __name__ == '__main__':
