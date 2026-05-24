@@ -9,7 +9,7 @@ from .serializers import (
     ProductListSerializer, ProductDetailSerializer
 )
 from .filters import ProductFilter
-from users.permissions import IsSellerOrAdmin
+from .permissions import IsSellerOrAdmin
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
