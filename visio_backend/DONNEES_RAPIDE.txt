@@ -1,0 +1,225 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║          📦 CHARGER LES DONNÉES (PRODUITS, ADMIN, ETC.)              ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+📊 PROBLÈME
+═══════════════════════════════════════════════════════════════════════
+
+Votre base PostgreSQL en production est vide:
+❌ Pas de produits
+❌ Pas de catégories
+❌ Pas de marques
+❌ Pas d'admin
+
+Mais vous avez des fixtures (données initiales) dans votre projet!
+
+═══════════════════════════════════════════════════════════════════════
+
+✅ SOLUTION EN 3 ÉTAPES
+═══════════════════════════════════════════════════════════════════════
+
+ÉTAPE 1: Mettre à Jour le Start Command sur Render
+────────────────────────────────────────────────────────────────────────
+
+1. https://dashboard.render.com
+2. Cliquez sur: visio-backend-sp1h
+3. Cliquez sur: Settings
+4. Cherchez: "Start Command"
+5. Remplacez par:
+
+python load_initial_data.py && python manage.py migrate --no-input && gunicorn core.wsgi:application --bind 0.0.0.0:$PORT --log-level info
+
+6. Cliquez sur: Save Changes
+
+ÉTAPE 2: Commit et Push
+────────────────────────────────────────────────────────────────────────
+
+git add .
+git commit -m "feat: Chargement automatique des données initiales"
+git push origin main
+
+ÉTAPE 3: Surveiller les Logs
+────────────────────────────────────────────────────────────────────────
+
+Après le redéploiement, vous devriez voir:
+
+======================================================================
+🚀 INITIALISATION DE LA BASE DE DONNÉES
+======================================================================
+
+👤 Création du superuser...
+✅ Superuser créé: admin@visio.com
+   Password: Admin123!Visio
+
+📦 Chargement des fixtures...
+   ✅ products/fixtures/initial_data.json chargé
+   ✅ products/fixtures/products.json chargé
+
+📊 Données chargées:
+   - Catégories: 15
+   - Marques: 10
+   - Produits: 50
+
+✅ INITIALISATION TERMINÉE
+
+═══════════════════════════════════════════════════════════════════════
+
+🔍 VÉRIFICATION
+═══════════════════════════════════════════════════════════════════════
+
+1. Connexion Admin:
+   ────────────────
+   URL:      https://visio-backend-sp1h.onrender.com/admin/
+   Email:    admin@visio.com
+   Password: Admin123!Visio
+   
+   ⚠️  CHANGEZ LE MOT DE PASSE IMMÉDIATEMENT!
+
+2. Vérifier les Produits:
+   ──────────────────────
+   Admin: Products → Products (vous devriez voir vos produits)
+   API:   https://visio-backend-sp1h.onrender.com/api/products/
+
+3. Vérifier les Catégories:
+   ────────────────────────
+   API: https://visio-backend-sp1h.onrender.com/api/products/categories/
+
+═══════════════════════════════════════════════════════════════════════
+
+📦 QUE CONTIENT load_initial_data.py ?
+═══════════════════════════════════════════════════════════════════════
+
+1. Crée le superuser admin
+2. Charge products/fixtures/initial_data.json
+   → Catégories (Smartphones, Tablettes, etc.)
+   → Marques (Apple, Samsung, Infinix, etc.)
+3. Charge products/fixtures/products.json
+   → Tous vos produits avec prix, descriptions, stocks
+
+═══════════════════════════════════════════════════════════════════════
+
+🖼️  ET LES IMAGES ?
+═══════════════════════════════════════════════════════════════════════
+
+Les fixtures contiennent des chemins vers des images locales.
+
+Pour que les images fonctionnent en production:
+
+Option 1: Configurer Cloudinary (Recommandé)
+─────────────────────────────────────────────
+1. Dashboard Render → Environment
+2. Ajoutez:
+   CLOUDINARY_CLOUD_NAME=drt6c8efi
+   CLOUDINARY_API_KEY=853275685212226
+   CLOUDINARY_API_SECRET=ThoYi2ke_9uYDF-DbCYaDL9uKmY
+3. Sauvegardez
+4. Localement, exécutez: python upload_media.py
+
+Option 2: Utiliser des URLs Externes
+─────────────────────────────────────
+Modifiez les fixtures pour utiliser des URLs d'images hébergées ailleurs.
+
+═══════════════════════════════════════════════════════════════════════
+
+🔄 RÉINITIALISER LES DONNÉES
+═══════════════════════════════════════════════════════════════════════
+
+Si vous voulez supprimer et recharger toutes les données:
+
+1. Créez reset_data.py:
+
+import os, django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
+django.setup()
+from products.models import Product, Category, Brand
+from users.models import User
+
+Product.objects.all().delete()
+Category.objects.all().delete()
+Brand.objects.all().delete()
+User.objects.filter(is_superuser=False).delete()
+print("✅ Données supprimées")
+
+2. Modifiez temporairement le Start Command:
+   python reset_data.py && python load_initial_data.py && ...
+
+3. Après le redéploiement, restaurez le Start Command normal
+
+═══════════════════════════════════════════════════════════════════════
+
+🆘 PROBLÈMES COURANTS
+═══════════════════════════════════════════════════════════════════════
+
+Problème: "Fixture introuvable"
+────────────────────────────────
+→ Vérifiez que products/fixtures/ existe
+→ Vérifiez que les fichiers .json sont commit dans Git
+→ Vérifiez le .gitignore
+
+Problème: "Des données existent déjà"
+──────────────────────────────────────
+→ C'est normal! Le script ne recharge pas si des données existent
+→ Pour forcer le rechargement, utilisez reset_data.py
+
+Problème: Images manquantes
+────────────────────────────
+→ Configurez Cloudinary (voir ci-dessus)
+→ Ou uploadez les images avec: python upload_media.py
+
+═══════════════════════════════════════════════════════════════════════
+
+📋 CHECKLIST
+═══════════════════════════════════════════════════════════════════════
+
+Configuration:
+  [ ] Start Command mis à jour sur Render
+  [ ] Code commit et push
+  [ ] Redéploiement terminé
+
+Logs:
+  [ ] "Superuser créé" visible
+  [ ] "Fixtures chargées" visible
+  [ ] Statistiques affichées
+  [ ] Aucune erreur
+
+Vérification:
+  [ ] Connexion admin réussie
+  [ ] Produits visibles dans l'admin
+  [ ] API /api/products/ retourne des produits
+  [ ] (Optionnel) Images visibles
+
+═══════════════════════════════════════════════════════════════════════
+
+💡 ASTUCE: EXPORTER VOS DONNÉES LOCALES
+═══════════════════════════════════════════════════════════════════════
+
+Si vous voulez exporter vos données SQLite actuelles:
+
+# Exporter tout
+python manage.py dumpdata products.Category products.Brand products.Product products.ProductImage --indent 2 > products/fixtures/my_data.json
+
+# Puis ajoutez my_data.json dans load_initial_data.py
+
+═══════════════════════════════════════════════════════════════════════
+
+📞 DOCUMENTATION COMPLÈTE
+═══════════════════════════════════════════════════════════════════════
+
+Guide détaillé: CHARGER_DONNEES.md
+
+═══════════════════════════════════════════════════════════════════════
+
+🚀 FAITES-LE MAINTENANT!
+═══════════════════════════════════════════════════════════════════════
+
+1. Dashboard Render → Settings → Start Command
+2. Remplacez par la commande ci-dessus
+3. Save
+4. git add . && git commit -m "feat: données" && git push
+5. Attendez 2-3 minutes
+6. Connectez-vous à /admin/
+7. Vérifiez les produits!
+
+C'EST TOUT! 🎉
+
+═══════════════════════════════════════════════════════════════════════
