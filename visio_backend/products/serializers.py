@@ -21,9 +21,26 @@ class BrandSerializer(serializers.ModelSerializer):
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+    
     class Meta:
         model = ProductImage
         fields = ['id', 'image', 'alt_text', 'is_primary', 'order']
+    
+    def get_image(self, obj):
+        """Retourne l'URL complète de l'image"""
+        if obj.image:
+            # Si l'image commence par "products/", c'est un chemin Cloudinary
+            if obj.image.name.startswith('products/'):
+                cloudinary_base = 'https://res.cloudinary.com/drt6c8efi/image/upload'
+                return f"{cloudinary_base}/{obj.image.name}"
+            
+            # Sinon, construire l'URL normale
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+            return obj.image.url
+        return None
 
 
 class ProductSpecificationSerializer(serializers.ModelSerializer):
@@ -53,6 +70,13 @@ class ProductListSerializer(serializers.ModelSerializer):
     def get_primary_image(self, obj):
         image = obj.images.filter(is_primary=True).first() or obj.images.first()
         if image:
+            # Si l'image commence par "products/", c'est un chemin Cloudinary
+            if image.image.name.startswith('products/'):
+                # Construire l'URL Cloudinary manuellement
+                cloudinary_base = 'https://res.cloudinary.com/drt6c8efi/image/upload'
+                return f"{cloudinary_base}/{image.image.name}"
+            
+            # Sinon, utiliser l'URL normale
             request = self.context.get('request')
             if request:
                 return request.build_absolute_uri(image.image.url)
