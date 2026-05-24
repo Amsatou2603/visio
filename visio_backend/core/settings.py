@@ -204,6 +204,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:3000',
 ]
 if os.environ.get('CORS_ALLOWED_ORIGINS'):
-    CORS_ALLOWED_ORIGINS += os.environ.get('CORS_ALLOWED_ORIGINS', '').split(',')
+    # Nettoyer les URLs (enlever les slashes finaux et espaces)
+    origins = os.environ.get('CORS_ALLOWED_ORIGINS', '').split(',')
+    CORS_ALLOWED_ORIGINS += [origin.strip().rstrip('/') for origin in origins if origin.strip()]
 
 CORS_ALLOW_CREDENTIALS = True
