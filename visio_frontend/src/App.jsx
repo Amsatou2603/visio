@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
 import Loader from './components/Loader';
 import StarField from './components/StarField';
+import { ThemeProvider } from './context/ThemeContext';
 
 const Home = React.lazy(() => import('./pages/Home'));
 const Catalogue = React.lazy(() => import('./pages/Catalogue'));
@@ -21,6 +22,11 @@ const Dashboard = React.lazy(() => import('./pages/Dashboard'));
 const SellerDashboard = React.lazy(() => import('./pages/SellerDashboard'));
 const Partenaires = React.lazy(() => import('./pages/Partenaires'));
 const NotFound = React.lazy(() => import('./pages/NotFound'));
+const AddProduct = React.lazy(() => import('./pages/AddProduct'));
+const EditProduct = React.lazy(() => import('./pages/EditProduct'));
+
+
+
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -62,6 +68,8 @@ const AppContent = () => (
           <Route path="/register-seller" element={<RegisterSeller />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/seller-dashboard" element={<SellerRoute><SellerDashboard /></SellerRoute>} />
+          <Route path="/products/new" element={<SellerRoute><AddProduct /></SellerRoute>} />
+          <Route path="/products/edit/:slug" element={<SellerRoute><EditProduct /></SellerRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </React.Suspense>
@@ -72,18 +80,20 @@ const AppContent = () => (
 
 const App = () => (
   <HelmetProvider>
-    <AuthProvider>
-      <CartProvider>
-        <BrowserRouter>
-          <div className="page-bg" />
-          <div className="neon-orb neon-orb-1" />
-          <div className="neon-orb neon-orb-2" />
-          <div className="neon-orb neon-orb-3" />
-          <StarField />
-          <AppContent />
-        </BrowserRouter>
-      </CartProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <CartProvider>
+          <BrowserRouter>
+            <div className="page-bg" />
+            <div className="neon-orb neon-orb-1" />
+            <div className="neon-orb neon-orb-2" />
+            <div className="neon-orb neon-orb-3" />
+            <StarField />
+            <AppContent />
+          </BrowserRouter>
+        </CartProvider>
+      </AuthProvider>
+    </ThemeProvider>
   </HelmetProvider>
 );
 

@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Search, Menu, X, ChevronDown, LogOut, Package } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { useTheme } from '../context/ThemeContext';
+import { Sun, Moon } from 'lucide-react';
 
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
@@ -12,6 +14,7 @@ const Navbar = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const userMenuRef = useRef(null);
+  const { isDark, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -108,6 +111,24 @@ const Navbar = () => {
                   {totalItems > 9 ? '9+' : totalItems}
                 </span>
               )}
+            </button>
+            <button
+              onClick={toggleTheme}
+              style={{
+                padding: 8, background: 'none', border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: 10, cursor: 'pointer',
+                color: 'var(--text-secondary)', transition: 'all 0.2s',
+                backdropFilter: 'blur(10px)',
+                background: 'rgba(255,255,255,0.05)',
+              }}
+              title={isDark ? 'Mode clair' : 'Mode sombre'}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(249,115,22,0.4)'; e.currentTarget.style.color = 'var(--neon-orange)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+            >
+              {isDark
+                ? <Sun style={{ width: 18, height: 18 }} />
+                : <Moon style={{ width: 18, height: 18 }} />
+              }
             </button>
 
             {/* User menu */}
