@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -12,6 +12,8 @@ import CartDrawer from './components/CartDrawer';
 import Loader from './components/Loader';
 import StarField from './components/StarField';
 import WhatsAppCTA from './components/WhatsAppCTA';
+import SplashScreen from './components/SplashScreen';
+import PageTransition from './components/PageTransition';
 
 const Home = React.lazy(() => import('./pages/Home'));
 const Catalogue = React.lazy(() => import('./pages/Catalogue'));
@@ -52,60 +54,64 @@ const SellerRoute = ({ children }) => {
 };
 
 const AppContent = () => {
-  const { isAuthenticated, user } = useAuth();
-  const isSeller = user?.role === 'seller' || user?.is_staff;
-
   return (
     <div className="min-h-screen flex flex-col" style={{ position: 'relative', zIndex: 1 }}>
       <Navbar />
       <CartDrawer />
       <main className="flex-1">
         <React.Suspense fallback={<Loader />}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/catalogue" element={<Catalogue />} />
-            <Route path="/products/:slug" element={<ProductDetail />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/partenaires" element={<Partenaires />} />
-            <Route path="/boutique/:slug" element={<SellerShop />} />
-            <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
-            <Route path="/login" element={<PublicOnlyRoute><Login /></PublicOnlyRoute>} />
-            <Route path="/register" element={<PublicOnlyRoute><Register /></PublicOnlyRoute>} />
-            <Route path="/register-seller" element={<RegisterSeller />} />
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/seller-dashboard" element={<SellerRoute><SellerDashboard /></SellerRoute>} />
-            <Route path="/products/new" element={<SellerRoute><AddProduct /></SellerRoute>} />
-            <Route path="/products/edit/:slug" element={<SellerRoute><EditProduct /></SellerRoute>} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <PageTransition>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/catalogue" element={<Catalogue />} />
+              <Route path="/products/:slug" element={<ProductDetail />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/partenaires" element={<Partenaires />} />
+              <Route path="/boutique/:slug" element={<SellerShop />} />
+              <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+              <Route path="/login" element={<PublicOnlyRoute><Login /></PublicOnlyRoute>} />
+              <Route path="/register" element={<PublicOnlyRoute><Register /></PublicOnlyRoute>} />
+              <Route path="/register-seller" element={<RegisterSeller />} />
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/seller-dashboard" element={<SellerRoute><SellerDashboard /></SellerRoute>} />
+              <Route path="/products/new" element={<SellerRoute><AddProduct /></SellerRoute>} />
+              <Route path="/products/edit/:slug" element={<SellerRoute><EditProduct /></SellerRoute>} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </PageTransition>
         </React.Suspense>
       </main>
       <Footer />
-      {/* WhatsApp CTA — visible pour tous */}
       <WhatsAppCTA phone="+221770000000" />
     </div>
   );
 };
 
-const App = () => (
-  <HelmetProvider>
-    <ThemeProvider>
-      <AuthProvider>
-        <CartProvider>
-          <WishlistProvider>
-            <BrowserRouter>
-              <div className="page-bg" />
-              <div className="neon-orb neon-orb-1" />
-              <div className="neon-orb neon-orb-2" />
-              <div className="neon-orb neon-orb-3" />
-              <StarField />
-              <AppContent />
-            </BrowserRouter>
-          </WishlistProvider>
-        </CartProvider>
-      </AuthProvider>
-    </ThemeProvider>
-  </HelmetProvider>
-);
+const App = () => {
+  const [splashDone, setSplashDone] = useState(false);
+  const handleSplashDone = useCallback(() => setSplashDone(true), []);
+
+  return (
+    <HelmetProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <CartProvider>
+            <WishlistProvider>
+              {!splashDone && <SplashScreen onDone={handleSplashDone} />}
+              <BrowserRouter>
+                <div className="page-bg" />
+                <div className="neon-orb neon-orb-1" />
+                <div className="neon-orb neon-orb-2" />
+                <div className="neon-orb neon-orb-3" />
+                <StarField />
+                {splashDone && <AppContent />}
+              </BrowserRouter>
+            </WishlistProvider>
+          </CartProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </HelmetProvider>
+  );
+};
 
 export default App;
