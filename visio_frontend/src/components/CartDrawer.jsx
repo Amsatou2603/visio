@@ -3,7 +3,13 @@ import { Link } from 'react-router-dom';
 import { X, Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/formatPrice';
+import { useAuth } from '../context/AuthContext';
+import AuthModal from './AuthModal';
+import { useState } from 'react';
 
+
+const { isAuthenticated } = useAuth();
+const [showAuth, setShowAuth] = useState(false);
 const CartDrawer = () => {
   const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalItems, totalPrice } = useCart();
   if (!isOpen) return null;
@@ -136,12 +142,22 @@ const CartDrawer = () => {
               <span style={{ color: 'var(--text-primary)', fontFamily: 'Orbitron', fontWeight: 700, fontSize: 14 }}>Total</span>
               <span style={{ color: 'var(--neon-orange)', fontFamily: 'Orbitron', fontWeight: 900, fontSize: 16, textShadow: '0 0 10px var(--neon-orange-glow)' }}>{formatPrice(totalPrice + 2000)}</span>
             </div>
-            <Link to="/checkout" onClick={() => setIsOpen(false)} className="btn-primary" style={{ width: '100%', justifyContent: 'center', fontSize: 14, padding: '12px 0' }}>
-              Commander maintenant
-            </Link>
-            <button onClick={() => setIsOpen(false)} className="btn-secondary" style={{ width: '100%', justifyContent: 'center', fontSize: 13, padding: '10px 0', marginTop: 8 }}>
-              Continuer mes achats
-            </button>
+            <>
+            <AuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} reason="acheter" />
+            {isAuthenticated ? (
+              <Link to="/checkout" onClick={() => setIsOpen(false)} className="btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '12px 0', fontSize: 14 }}>
+                Commander maintenant
+              </Link>
+            ) : (
+              <button
+                onClick={() => setShowAuth(true)}
+                className="btn-primary"
+                style={{ width: '100%', justifyContent: 'center', padding: '12px 0', fontSize: 14, border: 'none', cursor: 'pointer' }}
+              >
+                Commander maintenant
+              </button>
+            )}
+          </>
           </div>
         )}
       </div>

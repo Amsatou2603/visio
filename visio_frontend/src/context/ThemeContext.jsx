@@ -5,7 +5,7 @@ const ThemeContext = createContext(null);
 export const ThemeProvider = ({ children }) => {
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem('visio_theme');
-    return saved ? saved === 'dark' : true; // dark par défaut
+    return saved ? saved === 'dark' : false; // CLAIR par défaut
   });
 
   useEffect(() => {
