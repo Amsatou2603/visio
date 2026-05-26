@@ -20,6 +20,7 @@ const ProductDetail = () => {
   const [reviewForm, setReviewForm] = useState({ rating: 5, title: '', comment: '' });
   const [reviewLoading, setReviewLoading] = useState(false);
   const [reviewError, setReviewError] = useState('');
+  const [similar, setSimilar] = useState([]);
 
   const inCart = product ? isInCart(product.id) : false;
   const cartItem = product ? items.find(i => i.id === product.id) : null;
@@ -30,6 +31,16 @@ const ProductDetail = () => {
       try {
         const res = await api.get(`/products/${slug}/`);
         setProduct(res.data);
+        const simRes = await api.get('/products/', {
+          params: {
+            category: res.data.category?.slug,
+            limit: 4,
+          }
+        });
+        const simProducts = (simRes.data.results || simRes.data)
+          .filter(p => p.id !== res.data.id)
+          .slice(0, 4);
+        setSimilar(simProducts);
         const revRes = await api.get(`/reviews/product/${res.data.id}/`);
         setReviews(revRes.data.results || revRes.data);
       } catch (err) {
@@ -67,6 +78,19 @@ const ProductDetail = () => {
       setReviewLoading(false);
     }
   };
+
+  {similar.length > 0 && (
+  <div style={{ marginTop: 48 }}>
+    <h2 style={{ fontFamily: 'Orbitron', fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 24 }}>
+      Produits similaires
+    </h2>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
+      {similar.map(p => (
+        <ProductCard key={p.id} product={p} />
+      ))}
+    </div>
+  </div>
+  )}
 
   if (loading) return <Loader text="Chargement du produit..." />;
   if (!product) return (

@@ -10,10 +10,11 @@ class ProductFilter(django_filters.FilterSet):
     condition = django_filters.CharFilter(field_name='condition', lookup_expr='exact')
     in_stock = django_filters.BooleanFilter(field_name='stock', method='filter_in_stock')
     is_featured = django_filters.BooleanFilter(field_name='is_featured')
+    seller_slug = django_filters.CharFilter(field_name='seller__seller_profile__shop_slug', lookup_expr='exact')
 
     class Meta:
         model = Product
-        fields = ['min_price', 'max_price', 'category', 'brand', 'condition', 'in_stock', 'is_featured']
+        fields = ['min_price', 'max_price', 'category', 'brand', 'condition', 'in_stock', 'is_featured', 'seller_slug']
 
     def filter_in_stock(self, queryset, name, value):
         if value:

@@ -214,11 +214,11 @@ const Partenaires = () => {
                   {/* Actions */}
                   <div style={{ display: 'flex', gap: 8 }}>
                     <Link
-                      to={`/catalogue?seller=${seller.shop_slug}`}
+                      to={`/boutique/${seller.shop_slug}`}
                       className="btn-primary"
                       style={{ flex: 1, justifyContent: 'center', fontSize: 12, padding: '9px 0' }}
                     >
-                      Voir les produits
+                      Voir la boutique →
                     </Link>
                     {seller.whatsapp && (
                       <a

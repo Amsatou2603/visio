@@ -3,13 +3,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils import timezone
-from .models import User, SellerProfile
+from .models import User, SellerProfile, Wishlist
 from .serializers import (
     RegisterSerializer, RegisterSellerSerializer,
     UserSerializer, SellerProfileSerializer,
     SellerStatsSerializer, ChangePasswordSerializer
 )
 from products.models import Product
+from products.serializers import ProductListSerializer
 from orders.models import Order, OrderItem
 
 
@@ -140,3 +141,28 @@ class LogoutView(APIView):
             return Response({'detail': 'Déconnexion réussie.'})
         except Exception:
             return Response({'detail': 'Token invalide.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class WishlistView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        wishlist = Wishlist.objects.filter(user=request.user).select_related('product')
+        products = [w.product for w in wishlist]
+        serializer = ProductListSerializer(products, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    def post(self, request):
+        product_id = request.data.get('product_id')
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return Response({'error': 'Produit introuvable.'}, status=status.HTTP_404_NOT_FOUND)
+
+        wishlist_item, created = Wishlist.objects.get_or_create(
+            user=request.user, product=product
+        )
+        if not created:
+            wishlist_item.delete()
+            return Response({'status': 'removed', 'message': 'Retiré de la wishlist.'})
+        return Response({'status': 'added', 'message': 'Ajouté à la wishlist.'})

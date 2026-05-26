@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { ShoppingCart, Star, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/formatPrice';
+import { useWishlist } from '../context/WishlistContext';
+import { useAuth } from '../context/AuthContext';
 
 const ProductCard = ({ product }) => {
   const { addItem, isInCart } = useCart();
@@ -13,6 +15,16 @@ const ProductCard = ({ product }) => {
     e.stopPropagation();
     if (!inCart) addItem(product);
   };
+  const { toggle, isInWishlist } = useWishlist();
+  const { isAuthenticated } = useAuth();
+  const inWishlist = isInWishlist(product.id);
+
+  const handleWishlist = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isAuthenticated) return;
+    await toggle(product.id);
+  };
 
   const conditionLabel = product.condition === 'new' ? 'Neuf'
     : product.condition === 'refurbished' ? 'Reconditionné' : 'Occasion';
@@ -22,6 +34,26 @@ const ProductCard = ({ product }) => {
       <div className="flip-card">
 
         {/* FACE AVANT */}
+        {isAuthenticated && (
+          <button
+            onClick={handleWishlist}
+            style={{
+              position: 'absolute', top: 10, right: 10,
+              zIndex: 10, background: 'rgba(0,0,0,0.4)',
+              backdropFilter: 'blur(8px)',
+              border: `1px solid ${inWishlist ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.2)'}`,
+              borderRadius: '50%', width: 32, height: 32,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer', transition: 'all 0.2s',
+              color: inWishlist ? '#ef4444' : 'rgba(255,255,255,0.7)',
+              fontSize: 16,
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.2)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.6)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(0,0,0,0.4)'; e.currentTarget.style.borderColor = inWishlist ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.2)'; }}
+          >
+            {inWishlist ? '❤️' : '🤍'}
+          </button>
+        )}
         <div className="card-front">
           <div className="card-figure">
             {product.primary_image ? (
