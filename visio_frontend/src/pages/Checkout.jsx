@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import { formatPrice } from '../utils/formatPrice';
+import AuthModal from '../components/AuthModal';
 
 const PAYMENT_METHODS = [
   { id: 'wave', label: 'Wave', emoji: '🌊', needsPhone: true },
@@ -23,6 +24,7 @@ const Checkout = () => {
   const [error, setError] = useState('');
   const [orderId, setOrderId] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const [form, setForm] = useState({
     shipping_name: user?.full_name || '',
@@ -76,6 +78,7 @@ const Checkout = () => {
     }
   };
 
+
   if (items.length === 0 && !success) {
     navigate('/cart');
     return null;
@@ -84,6 +87,11 @@ const Checkout = () => {
   if (success) {
     return (
       <div className="max-w-lg mx-auto px-4 py-20 text-center">
+        <AuthModal
+          isOpen={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
+          reason="acheter"
+        />
         <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-6" />
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Commande confirmée ! 🎉</h1>
         <p className="text-gray-500 mb-8">
