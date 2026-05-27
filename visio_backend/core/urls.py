@@ -27,6 +27,7 @@ urlpatterns = [
     path('api/orders/', include('orders.urls')),
     path('api/payments/', include('payments.urls')),
     path('api/reviews/', include('reviews.urls')),
+    path('api/notifications/', include('notifications.urls')),
     path('sitemap.xml', simple_sitemap, name='sitemap'),
 ]
 

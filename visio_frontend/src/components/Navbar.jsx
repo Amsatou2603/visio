@@ -2,22 +2,25 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   ShoppingCart, Search, Menu, X,
-  ChevronDown, LogOut, Package, Store, Sun, Moon, Heart
+  ChevronDown, LogOut, Package, Store, Sun, Moon, Heart, Bell
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
+import { useNotifications } from '../context/NotificationContext';
 
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const { totalItems, setIsOpen } = useCart();
   const { isDark, toggleTheme } = useTheme();
+  const { unreadCount, notifications, isOpen: notificationOpen, setIsOpen: setNotificationOpen, markAsRead, markAllAsRead } = useNotifications();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [scrolled, setScrolled] = useState(false);
   const userMenuRef = useRef(null);
+  const notificationRef = useRef(null);
 
   const isSeller = user?.role === 'seller' || user?.role === 'admin' || user?.is_staff;
 
@@ -31,6 +34,9 @@ const Navbar = () => {
     const handleClickOutside = (e) => {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
         setUserMenuOpen(false);
+      }
+      if (notificationRef.current && !notificationRef.current.contains(e.target)) {
+        setNotificationOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -201,6 +207,100 @@ const Navbar = () => {
               >
                 {isDark ? <Sun style={{ width: 17, height: 17 }} /> : <Moon style={{ width: 17, height: 17 }} />}
               </button>
+
+              {/* Notifications */}
+              {isAuthenticated && (
+                <div style={{ position: 'relative' }} ref={notificationRef}>
+                  <button
+                    onClick={() => setNotificationOpen(!notificationOpen)}
+                    style={{ ...iconBtnStyle, position: 'relative' }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--primary)'; e.currentTarget.style.color = 'var(--primary)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+                  >
+                    <Bell style={{ width: 17, height: 17 }} />
+                    {unreadCount > 0 && (
+                      <span style={{
+                        position: 'absolute', top: -5, right: -5,
+                        background: 'var(--primary)', color: '#fff',
+                        fontSize: 9, fontWeight: 800, borderRadius: '50%',
+                        width: 17, height: 17,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontFamily: 'DM Sans',
+                      }}>
+                        {unreadCount > 9 ? '9+' : unreadCount}
+                      </span>
+                    )}
+                  </button>
+
+                  {/* Notification Dropdown */}
+                  {notificationOpen && (
+                    <div style={{
+                      position: 'absolute', top: '100%', right: 0,
+                      marginTop: 10, width: 320, maxHeight: 400,
+                      background: 'var(--bg-card)',
+                      border: '1px solid var(--border)',
+                      borderRadius: 12,
+                      boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
+                      zIndex: 1000,
+                      overflow: 'hidden',
+                    }}>
+                      <div style={{
+                        padding: '12px 16px',
+                        borderBottom: '1px solid var(--border)',
+                        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                      }}>
+                        <span style={{ fontSize: 13, fontWeight: 700, fontFamily: 'Orbitron', color: 'var(--text-primary)' }}>
+                          Notifications
+                        </span>
+                        {unreadCount > 0 && (
+                          <button
+                            onClick={markAllAsRead}
+                            style={{
+                              fontSize: 11, color: 'var(--primary)', background: 'none',
+                              border: 'none', cursor: 'pointer', fontFamily: 'Rajdhani', fontWeight: 600,
+                            }}
+                          >
+                            Tout marquer comme lu
+                          </button>
+                        )}
+                      </div>
+                      <div style={{ maxHeight: 320, overflowY: 'auto' }}>
+                        {notifications.length === 0 ? (
+                          <div style={{ padding: '24px', textAlign: 'center', color: 'var(--text-secondary)', fontFamily: 'Rajdhani', fontSize: 13 }}>
+                            Aucune notification
+                          </div>
+                        ) : (
+                          notifications.slice(0, 10).map(notification => (
+                            <div
+                              key={notification.id}
+                              onClick={() => markAsRead(notification.id)}
+                              style={{
+                                padding: '12px 16px',
+                                borderBottom: '1px solid var(--border)',
+                                cursor: 'pointer',
+                                background: notification.is_read ? 'transparent' : 'var(--primary-subtle)',
+                                transition: 'background 0.2s',
+                              }}
+                              onMouseEnter={e => e.currentTarget.style.background = 'var(--input-bg)'}
+                              onMouseLeave={e => e.currentTarget.style.background = notification.is_read ? 'transparent' : 'var(--primary-subtle)'}
+                            >
+                              <div style={{ fontSize: 12, fontWeight: 600, fontFamily: 'Rajdhani', color: 'var(--text-primary)', marginBottom: 4 }}>
+                                {notification.title}
+                              </div>
+                              <div style={{ fontSize: 11, color: 'var(--text-secondary)', fontFamily: 'Rajdhani' }}>
+                                {notification.message}
+                              </div>
+                              <div style={{ fontSize: 10, color: 'var(--text-tertiary)', fontFamily: 'Rajdhani', marginTop: 6 }}>
+                                {new Date(notification.created_at).toLocaleString('fr-FR')}
+                              </div>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Panier */}
               {!isSeller && (

@@ -5,6 +5,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { WishlistProvider } from './context/WishlistContext';
+import { NotificationProvider } from './context/NotificationContext';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -125,14 +126,16 @@ const App = () => {
         <AuthProvider>
           <CartProvider>
             <WishlistProvider>
-              <BrowserRouter>
-                <div className="page-bg" />
-                <StarField />
-                <ErrorBoundary>
-                  <AppContent />
-                </ErrorBoundary>
-                {!splashDone && <SplashScreen onDone={handleSplashDone} />}
-              </BrowserRouter>
+              <NotificationProvider>
+                <BrowserRouter>
+                  <div className="page-bg" />
+                  <StarField />
+                  <ErrorBoundary>
+                    <AppContent />
+                  </ErrorBoundary>
+                  {!splashDone && <SplashScreen onDone={handleSplashDone} />}
+                </BrowserRouter>
+              </NotificationProvider>
             </WishlistProvider>
           </CartProvider>
         </AuthProvider>

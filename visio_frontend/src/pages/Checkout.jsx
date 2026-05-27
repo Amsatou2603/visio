@@ -64,11 +64,20 @@ const Checkout = () => {
     setLoading(true);
     setError('');
     try {
-      await api.post('/payments/initiate/', {
+      const res = await api.post('/payments/initiate/', {
         order_id: orderId,
         method: payment.method,
         phone_number: payment.phone_number,
       });
+
+      // If backend returns a payment_url (PayTech), redirect the user
+      if (res.data && (res.data.payment_url || res.data.redirect_url)) {
+        const url = res.data.payment_url || res.data.redirect_url;
+        window.location.href = url;
+        return;
+      }
+
+      // Fallback: assume payment succeeded (simulation)
       clearCart();
       setSuccess(true);
     } catch (err) {

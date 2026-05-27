@@ -12,19 +12,27 @@ os.environ.setdefault('DJANGO_ENV', 'production')
 os.environ.setdefault('SECRET_KEY', 'test-secret-key-for-local-testing-only')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 
+# Fallback local pour les tests lorsqu'aucun DATABASE_URL n'est fourni
+if 'DATABASE_URL' not in os.environ:
+    import os as _os
+    os.environ['DATABASE_URL'] = f"sqlite:///{_os.path.join(_os.path.dirname(__file__), 'db.sqlite3')}"
+
+
 def test_imports():
     """Test que tous les modules peuvent être importés"""
     print("🔍 Test des imports...")
     try:
         import core.settings
         print("✅ Settings importé avec succès")
-        
+
+        django.setup()
+
         import core.urls
         print("✅ URLs importé avec succès")
-        
+
         import core.wsgi
         print("✅ WSGI importé avec succès")
-        
+
         return True
     except Exception as e:
         print(f"❌ Erreur d'import: {e}")
