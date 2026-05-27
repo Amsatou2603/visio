@@ -58,6 +58,10 @@ const SellerRoute = ({ children }) => {
 };
 
 const AppContent = () => {
+  const location = useLocation();
+  const noFooterRoutes = ['/login', '/register', '/register-seller'];
+  const showFooter = !noFooterRoutes.includes(location.pathname);
+
   return (
     <div className="min-h-screen flex flex-col" style={{ position: 'relative', zIndex: 1 }}>
       <Navbar />
@@ -85,7 +89,7 @@ const AppContent = () => {
           </PageTransition>
         </React.Suspense>
       </main>
-      <Footer />
+      {showFooter && <Footer />}
       <WhatsAppCTA phone="+221770000000" />
     </div>
   );

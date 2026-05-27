@@ -25,14 +25,26 @@ const Home = () => {
         if (!Array.isArray(featuredData)) featuredData = [];
 
         if (featuredData.length === 0) {
+          console.log('Featured products empty, fetching regular products...');
           const fallbackRes = await api.get('/products/', { params: { ordering: '-created_at', page_size: 8 } });
           featuredData = fallbackRes.data.results || fallbackRes.data || [];
+          console.log('Fallback products loaded:', featuredData.length);
         }
 
         setFeatured(featuredData);
         setCategories(categoriesRes.data.results || categoriesRes.data || []);
       } catch (err) {
-        console.error(err);
+        console.error('Error fetching home data:', err);
+        // Try fallback on any error
+        try {
+          const fallbackRes = await api.get('/products/', { params: { ordering: '-created_at', page_size: 8 } });
+          const featuredData = fallbackRes.data.results || fallbackRes.data || [];
+          setFeatured(featuredData);
+          console.log('Fallback products loaded after error:', featuredData.length);
+        } catch (fallbackErr) {
+          console.error('Fallback also failed:', fallbackErr);
+          setFeatured([]);
+        }
       } finally {
         setLoading(false);
       }

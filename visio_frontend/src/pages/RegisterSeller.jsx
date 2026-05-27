@@ -28,15 +28,15 @@ const InputField = ({ icon: Icon, label, name, type = 'text', placeholder, texta
           rows={3}
           style={{
             width: '100%', padding: '12px 16px 12px 44px',
-            background: 'rgba(255,255,255,0.05)',
+            background: 'var(--input-bg)',
             backdropFilter: 'blur(10px)',
-            border: `1px solid ${error ? 'rgba(248,113,113,0.5)' : 'rgba(255,255,255,0.12)'}`,
+            border: `1.5px solid ${error ? 'rgba(248,113,113,0.5)' : 'var(--border-strong)'}`,
             borderRadius: 10, color: 'var(--text-primary)',
             fontFamily: 'Rajdhani', fontSize: 15, outline: 'none',
             resize: 'none', transition: 'border-color 0.2s',
           }}
-          onFocus={e => e.target.style.borderColor = 'rgba(249,115,22,0.5)'}
-          onBlur={e => e.target.style.borderColor = error ? 'rgba(248,113,113,0.5)' : 'rgba(255,255,255,0.12)'}
+          onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+          onBlur={e => e.target.style.borderColor = error ? 'rgba(248,113,113,0.5)' : 'var(--border-strong)'}
         />
       ) : (
         <input
@@ -46,15 +46,15 @@ const InputField = ({ icon: Icon, label, name, type = 'text', placeholder, texta
           placeholder={placeholder}
           style={{
             width: '100%', padding: '12px 16px 12px 44px',
-            background: 'rgba(255,255,255,0.05)',
+            background: 'var(--input-bg)',
             backdropFilter: 'blur(10px)',
-            border: `1px solid ${error ? 'rgba(248,113,113,0.5)' : 'rgba(255,255,255,0.12)'}`,
+            border: `1.5px solid ${error ? 'rgba(248,113,113,0.5)' : 'var(--border-strong)'}`,
             borderRadius: 10, color: 'var(--text-primary)',
             fontFamily: 'Rajdhani', fontSize: 15, outline: 'none',
             transition: 'border-color 0.2s',
           }}
-          onFocus={e => e.target.style.borderColor = 'rgba(249,115,22,0.5)'}
-          onBlur={e => e.target.style.borderColor = error ? 'rgba(248,113,113,0.5)' : 'rgba(255,255,255,0.12)'}
+          onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+          onBlur={e => e.target.style.borderColor = error ? 'rgba(248,113,113,0.5)' : 'var(--border-strong)'}
         />
       )}
     </div>

@@ -6,6 +6,7 @@ import Loader from '../components/Loader';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import { formatPrice, formatDate } from '../utils/formatPrice';
+import { getGreeting } from '../utils/getGreeting';
 
 const STATUS_CONFIG = {
   pending:    { label: 'En attente',    color: 'bg-yellow-100 text-yellow-700', icon: Clock },
@@ -21,6 +22,7 @@ const Dashboard = () => {
   const { user } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const greeting = getGreeting();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -41,9 +43,13 @@ const Dashboard = () => {
       <SEOHead title="Mon espace" url="/dashboard" />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="card p-6 mb-8 bg-gradient-to-r from-primary-500 to-primary-700 text-white">
-          <h1 className="text-2xl font-bold mb-1">Bonjour, {user?.first_name} 👋</h1>
-          <p className="text-primary-100">{user?.email}</p>
+        <div className="card p-6 mb-8 text-white" style={{
+          background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)',
+          border: '1.5px solid var(--border-red)',
+          boxShadow: 'var(--shadow-red)'
+        }}>
+          <h1 className="text-2xl font-bold mb-1">{greeting}, {user?.first_name} 👋</h1>
+          <p style={{ color: 'rgba(255,255,255,0.9)' }}>{user?.email}</p>
         </div>
 
         {/* Stats */}
