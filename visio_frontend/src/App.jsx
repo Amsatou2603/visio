@@ -30,6 +30,7 @@ const Partenaires = React.lazy(() => import('./pages/Partenaires'));
 const SellerShop = React.lazy(() => import('./pages/SellerShop'));
 const AddProduct = React.lazy(() => import('./pages/AddProduct'));
 const EditProduct = React.lazy(() => import('./pages/EditProduct'));
+const Wishlist = React.lazy(() => import('./pages/Wishlist'));
 const NotFound = React.lazy(() => import('./pages/NotFound'));
 
 const ProtectedRoute = ({ children }) => {
@@ -74,6 +75,7 @@ const AppContent = () => {
               <Route path="/catalogue" element={<Catalogue />} />
               <Route path="/products/:slug" element={<ProductDetail />} />
               <Route path="/cart" element={<Cart />} />
+              <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/partenaires" element={<Partenaires />} />
               <Route path="/boutique/:slug" element={<SellerShop />} />
               <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
