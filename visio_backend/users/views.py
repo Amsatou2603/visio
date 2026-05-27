@@ -166,3 +166,114 @@ class WishlistView(APIView):
             wishlist_item.delete()
             return Response({'status': 'removed', 'message': 'Retiré de la wishlist.'})
         return Response({'status': 'added', 'message': 'Ajouté à la wishlist.'})
+
+class SellerAnalyticsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        if user.role not in ['seller', 'admin'] and not user.is_staff:
+            return Response({'error': 'Accès refusé.'}, status=status.HTTP_403_FORBIDDEN)
+
+        from django.utils import timezone
+        from datetime import timedelta
+        from orders.models import Order, OrderItem
+
+        now = timezone.now()
+
+        # Revenus des 6 derniers mois
+        monthly_data = []
+        for i in range(5, -1, -1):
+            month_start = (now.replace(day=1) - timedelta(days=i*30)).replace(day=1)
+            month_end = (month_start + timedelta(days=32)).replace(day=1)
+            revenue = sum(
+                item.total_price
+                for order in Order.objects.filter(
+                    created_at__gte=month_start,
+                    created_at__lt=month_end,
+                    status__in=['confirmed', 'delivered']
+                )
+                for item in order.items.filter(product__seller=user)
+            )
+            orders_count = Order.objects.filter(
+                created_at__gte=month_start,
+                created_at__lt=month_end,
+                items__product__seller=user
+            ).distinct().count()
+            monthly_data.append({
+                'month': month_start.strftime('%b %Y'),
+                'revenue': float(revenue),
+                'orders': orders_count,
+            })
+
+        # Top produits par vues
+        top_products = list(
+            Product.objects.filter(seller=user, is_active=True)
+            .order_by('-views_count')[:5]
+            .values('name', 'views_count', 'average_rating', 'stock', 'price')
+        )
+        for p in top_products:
+            p['price'] = float(p['price'])
+            p['average_rating'] = float(p['average_rating'])
+            p['name'] = p['name'][:25] + ('...' if len(p['name']) > 25 else '')
+
+        # Répartition par statut de commandes
+        all_orders = Order.objects.filter(items__product__seller=user).distinct()
+        status_data = []
+        status_labels = {
+            'pending': 'En attente',
+            'confirmed': 'Confirmées',
+            'processing': 'En traitement',
+            'shipped': 'Expédiées',
+            'delivered': 'Livrées',
+            'cancelled': 'Annulées',
+        }
+        for status_key, label in status_labels.items():
+            count = all_orders.filter(status=status_key).count()
+            if count > 0:
+                status_data.append({'name': label, 'value': count, 'status': status_key})
+
+        # KPIs
+        total_revenue = sum(
+            item.total_price
+            for order in all_orders.filter(status__in=['confirmed', 'delivered'])
+            for item in order.items.filter(product__seller=user)
+        )
+        this_month_revenue = sum(
+            item.total_price
+            for order in all_orders.filter(
+                created_at__month=now.month,
+                created_at__year=now.year,
+                status__in=['confirmed', 'delivered']
+            )
+            for item in order.items.filter(product__seller=user)
+        )
+        last_month_start = (now.replace(day=1) - timedelta(days=1)).replace(day=1)
+        last_month_revenue = sum(
+            item.total_price
+            for order in all_orders.filter(
+                created_at__month=last_month_start.month,
+                created_at__year=last_month_start.year,
+                status__in=['confirmed', 'delivered']
+            )
+            for item in order.items.filter(product__seller=user)
+        )
+        growth = 0
+        if last_month_revenue > 0:
+            growth = round(((float(this_month_revenue) - float(last_month_revenue)) / float(last_month_revenue)) * 100, 1)
+
+        return Response({
+            'monthly_data': monthly_data,
+            'top_products': top_products,
+            'status_data': status_data,
+            'kpis': {
+                'total_revenue': float(total_revenue),
+                'this_month_revenue': float(this_month_revenue),
+                'last_month_revenue': float(last_month_revenue),
+                'growth_percent': growth,
+                'total_orders': all_orders.count(),
+                'pending_orders': all_orders.filter(status='pending').count(),
+                'total_products': Product.objects.filter(seller=user).count(),
+                'active_products': Product.objects.filter(seller=user, is_active=True).count(),
+            }
+        })

@@ -32,6 +32,7 @@ const AddProduct = React.lazy(() => import('./pages/AddProduct'));
 const EditProduct = React.lazy(() => import('./pages/EditProduct'));
 const Wishlist = React.lazy(() => import('./pages/Wishlist'));
 const NotFound = React.lazy(() => import('./pages/NotFound'));
+const Comparateur = React.lazy(() => import('./pages/Comparateur'));
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -87,6 +88,7 @@ const AppContent = () => {
               <Route path="/products/new" element={<SellerRoute><AddProduct /></SellerRoute>} />
               <Route path="/products/edit/:slug" element={<SellerRoute><EditProduct /></SellerRoute>} />
               <Route path="*" element={<NotFound />} />
+              <Route path="/comparateur" element={<Comparateur />} />
             </Routes>
           </PageTransition>
         </React.Suspense>
