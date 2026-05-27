@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
+import AuthModal from '../components/AuthModal';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { formatPrice } from '../utils/formatPrice';
 
 const Cart = () => {
   const { items, removeItem, updateQuantity, totalItems, totalPrice, clearCart } = useCart();
+  const { isAuthenticated } = useAuth();
+  const [showAuth, setShowAuth] = useState(false);
 
   if (items.length === 0) {
     return (
@@ -96,9 +100,20 @@ const Cart = () => {
                 <span>Total</span>
                 <span className="text-primary-600">{formatPrice(totalPrice + 2000)}</span>
               </div>
-              <Link to="/checkout" className="btn-primary w-full flex items-center justify-center gap-2 py-3">
-                Commander <ArrowRight className="w-4 h-4" />
-              </Link>
+              <AuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} reason="acheter" returnTo="/checkout" />
+              {isAuthenticated ? (
+                <Link to="/checkout" className="btn-primary w-full flex items-center justify-center gap-2 py-3">
+                  Commander <ArrowRight className="w-4 h-4" />
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowAuth(true)}
+                  className="btn-primary w-full flex items-center justify-center gap-2 py-3"
+                >
+                  Commander <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
               <Link to="/catalogue" className="btn-secondary w-full text-center mt-3 py-2 block text-sm">
                 Continuer mes achats
               </Link>

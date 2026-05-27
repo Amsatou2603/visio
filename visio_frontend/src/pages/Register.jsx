@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import SEOHead from '../components/SEOHead';
 import { useAuth } from '../context/AuthContext';
 
 const Register = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectTo = location.state?.from?.pathname || '/';
   const [form, setForm] = useState({
     email: '', username: '', first_name: '', last_name: '',
     password: '', password2: '', phone: '', country: 'Sénégal', city: '',
@@ -21,7 +23,7 @@ const Register = () => {
     setErrors({});
     try {
       await register(form);
-      navigate('/');
+      navigate(redirectTo, { replace: true });
     } catch (err) {
       setErrors(err.response?.data || { detail: 'Erreur lors de l\'inscription.' });
     } finally {

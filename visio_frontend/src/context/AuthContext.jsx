@@ -47,6 +47,12 @@ export const AuthProvider = ({ children }) => {
     initAuth();
   }, []);
 
+  useEffect(() => {
+    const handleLogout = () => setUser(null);
+    window.addEventListener('visio:logout', handleLogout);
+    return () => window.removeEventListener('visio:logout', handleLogout);
+  }, []);
+
   const login = async (email, password) => {
     const response = await api.post('/auth/login/', { email, password });
     const { access, refresh } = response.data;

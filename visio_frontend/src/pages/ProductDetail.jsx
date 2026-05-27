@@ -4,6 +4,7 @@ import { ShoppingCart, Star, Plus, Minus, Check } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import Loader from '../components/Loader';
 import ProductCard from '../components/ProductCard';
+import AuthModal from '../components/AuthModal';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
@@ -22,6 +23,7 @@ const ProductDetail = () => {
   const [reviewLoading, setReviewLoading] = useState(false);
   const [reviewError, setReviewError] = useState('');
   const [similar, setSimilar] = useState([]);
+  const [showAuth, setShowAuth] = useState(false);
 
   const inCart = product ? isInCart(product.id) : false;
   const cartItem = product ? items.find(i => i.id === product.id) : null;
@@ -233,9 +235,21 @@ const ProductDetail = () => {
               </div>
             )}
 
-            <Link to="/checkout" className="btn-outline w-full text-center block py-3">
-              Commander maintenant
-            </Link>
+            <AuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} reason="acheter" returnTo="/checkout" />
+            {isAuthenticated ? (
+              <Link to="/checkout" className="btn-outline w-full text-center block py-3">
+                Commander maintenant
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setShowAuth(true)}
+                className="btn-outline w-full text-center block py-3"
+                style={{ cursor: 'pointer' }}
+              >
+                Commander maintenant
+              </button>
+            )}
           </div>
         </div>
 

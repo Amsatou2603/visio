@@ -2,6 +2,13 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000/api';
 
+export const clearAuthStorage = () => {
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+  localStorage.removeItem('user');
+  window.dispatchEvent(new Event('visio:logout'));
+};
+
 const api = axios.create({
   baseURL: API_URL,
   headers: {
@@ -42,19 +49,11 @@ api.interceptors.response.use(
           originalRequest.headers.Authorization = `Bearer ${access}`;
           return api(originalRequest);
         } catch (refreshError) {
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('refresh_token');
-          localStorage.removeItem('user');
-          window.location.href = '/login';
+          clearAuthStorage();
           return Promise.reject(refreshError);
         }
       } else {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        localStorage.removeItem('user');
-        if (window.location.pathname !== '/login') {
-          window.location.href = '/login';
-        }
+        clearAuthStorage();
       }
     }
 

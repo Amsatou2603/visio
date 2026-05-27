@@ -140,7 +140,7 @@ const CartDrawer = () => {
               <span style={{ color: 'var(--text-primary)', fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: 14 }}>Total</span>
               <span style={{ color: 'var(--primary)', fontFamily: 'Syne, sans-serif', fontWeight: 900, fontSize: 16 }}>{formatPrice(totalPrice + 2000)}</span>
             </div>
-            <AuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} reason="acheter" />
+            <AuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} reason="acheter" returnTo="/checkout" />
             {isAuthenticated ? (
               <Link to="/checkout" onClick={() => setIsOpen(false)} className="btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '12px 0', fontSize: 14, display: 'flex' }}>
                 Commander maintenant

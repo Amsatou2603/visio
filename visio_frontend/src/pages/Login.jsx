@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import SEOHead from '../components/SEOHead';
 import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectTo = location.state?.from?.pathname || '/';
   const [form, setForm] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -16,7 +18,7 @@ const Login = () => {
     setError('');
     try {
       await login(form.email, form.password);
-      navigate('/');
+      navigate(redirectTo, { replace: true });
     } catch (err) {
       setError(err.response?.data?.detail || 'Email ou mot de passe incorrect.');
     } finally {

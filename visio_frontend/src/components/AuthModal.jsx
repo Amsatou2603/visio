@@ -1,8 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { X, ShoppingCart, Heart, Star } from 'lucide-react';
 
-const AuthModal = ({ isOpen, onClose, reason = 'acheter' }) => {
+const AuthModal = ({ isOpen, onClose, reason = 'acheter', returnTo }) => {
+  const location = useLocation();
+  const redirectPath = returnTo || location.pathname;
+
   if (!isOpen) return null;
 
   const reasons = {
@@ -83,6 +86,7 @@ const AuthModal = ({ isOpen, onClose, reason = 'acheter' }) => {
         <div style={{ display: 'flex', gap: 12 }}>
           <Link
             to="/login"
+            state={{ from: { pathname: redirectPath } }}
             onClick={onClose}
             className="btn-secondary"
             style={{ flex: 1, justifyContent: 'center', padding: '12px 0', fontSize: 14 }}
@@ -91,6 +95,7 @@ const AuthModal = ({ isOpen, onClose, reason = 'acheter' }) => {
           </Link>
           <Link
             to="/register"
+            state={{ from: { pathname: redirectPath } }}
             onClick={onClose}
             className="btn-primary"
             style={{ flex: 1, justifyContent: 'center', padding: '12px 0', fontSize: 14 }}
