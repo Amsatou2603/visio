@@ -1,4 +1,4 @@
-{
+﻿{
   "short_name": "Visio",
   "name": "Visio — Marketplace Tech Africaine",
   "icons": [
@@ -10,6 +10,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#f97316",
-  "background_color": "#0a0a12"
+  "theme_color": "#e63946",
+  "background_color": "#ffffff"
 }

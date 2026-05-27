@@ -168,7 +168,7 @@ const Navbar = () => {
                   }}>
                     <Store style={{ width: 14, height: 14 }} /> Ma boutique
                   </Link>
-                  <Link to="/products/new" className="btn-primary" style={{ padding: '7px 14px', fontSize: 13 }}>
+                  <Link to="/products/new" className="btn-primary" style={{ padding: '7px 14px', fontSize: 13, background: 'var(--primary)', color: '#fff', border: '1px solid var(--primary)' }}>
                     + Produit
                   </Link>
                 </>

@@ -16,12 +16,21 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [featuredRes, categoriesRes] = await Promise.all([
-          api.get('/products/featured/'),
-          api.get('/products/categories/'),
-        ]);
-        setFeatured(featuredRes.data.results || featuredRes.data);
-        setCategories(categoriesRes.data.results || categoriesRes.data);
+        const categoriesPromise = api.get('/products/categories/');
+        const featuredPromise = api.get('/products/featured/?page_size=8');
+
+        const [featuredRes, categoriesRes] = await Promise.all([featuredPromise, categoriesPromise]);
+
+        let featuredData = featuredRes.data.results || featuredRes.data || [];
+        if (!Array.isArray(featuredData)) featuredData = [];
+
+        if (featuredData.length === 0) {
+          const fallbackRes = await api.get('/products/', { params: { ordering: '-created_at', page_size: 8 } });
+          featuredData = fallbackRes.data.results || fallbackRes.data || [];
+        }
+
+        setFeatured(featuredData);
+        setCategories(categoriesRes.data.results || categoriesRes.data || []);
       } catch (err) {
         console.error(err);
       } finally {

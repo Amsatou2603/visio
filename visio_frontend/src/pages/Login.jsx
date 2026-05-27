@@ -32,7 +32,7 @@ const Login = () => {
       <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <div className="w-12 h-12 bg-primary-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4" style={{ background: 'var(--primary)' }}> 
               <span className="text-white font-bold text-xl">V</span>
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Connexion</h1>
@@ -74,7 +74,7 @@ const Login = () => {
 
           <p className="text-center text-sm text-gray-500 mt-6">
             Pas encore de compte ?{' '}
-            <Link to="/register" className="text-primary-500 font-medium hover:underline">
+            <Link to="/register" className="font-medium hover:underline" style={{ color: 'var(--primary)' }}> 
               Créer un compte
             </Link>
           </p>
@@ -85,3 +85,4 @@ const Login = () => {
 };
 
 export default Login;
+

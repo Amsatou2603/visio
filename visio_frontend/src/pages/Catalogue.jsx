@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
+import { Search, SlidersHorizontal, X } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import ProductCard from '../components/ProductCard';
 import Loader from '../components/Loader';
@@ -123,7 +123,7 @@ const Catalogue = () => {
     </label>
   );
 
-  const SidebarContent = () => (
+  const renderSidebarContent = () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       {/* Header sidebar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -131,14 +131,14 @@ const Catalogue = () => {
           Filtres {activeFilterCount > 0 && (
             <span style={{
               marginLeft: 8, fontSize: 11, padding: '2px 8px', borderRadius: 999,
-              background: 'var(--neon-orange)', color: '#fff', fontFamily: 'DM Sans',
+              background: 'var(--primary)', color: '#fff', fontFamily: 'DM Sans',
             }}>{activeFilterCount}</span>
           )}
         </span>
         <button
           onClick={resetFilters}
           style={{
-            fontSize: 12, color: 'var(--neon-orange)', background: 'none',
+            fontSize: 12, color: 'var(--primary)', background: 'none',
             border: 'none', cursor: 'pointer', fontFamily: 'DM Sans', fontWeight: 600,
           }}
         >
@@ -157,7 +157,7 @@ const Catalogue = () => {
             onChange={e => setFilters(f => ({ ...f, search: e.target.value }))}
             placeholder="Nom, marque..."
             style={{ ...inputSt, paddingLeft: 38 }}
-            onFocus={e => { e.target.style.borderColor = 'var(--neon-orange)'; e.target.style.boxShadow = '0 0 0 3px rgba(249,115,22,0.12)'; }}
+            onFocus={e => { e.target.style.borderColor = 'var(--primary)'; e.target.style.boxShadow = '0 0 0 3px var(--primary-glow)'; }}
             onBlur={e => { e.target.style.borderColor = 'var(--border-color)'; e.target.style.boxShadow = 'none'; }}
           />
         </div>
@@ -173,7 +173,7 @@ const Catalogue = () => {
           value={filters.category}
           onChange={e => handleFilterChange('category', e.target.value)}
           style={{ ...inputSt, cursor: 'pointer' }}
-          onFocus={e => { e.target.style.borderColor = 'var(--neon-orange)'; }}
+          onFocus={e => { e.target.style.borderColor = 'var(--primary)'; }}
           onBlur={e => { e.target.style.borderColor = 'var(--border-color)'; }}
         >
           <option value="">Toutes les catégories</option>
@@ -188,7 +188,7 @@ const Catalogue = () => {
           value={filters.brand}
           onChange={e => handleFilterChange('brand', e.target.value)}
           style={{ ...inputSt, cursor: 'pointer' }}
-          onFocus={e => { e.target.style.borderColor = 'var(--neon-orange)'; }}
+          onFocus={e => { e.target.style.borderColor = 'var(--primary)'; }}
           onBlur={e => { e.target.style.borderColor = 'var(--border-color)'; }}
         >
           <option value="">Toutes les marques</option>
@@ -206,7 +206,7 @@ const Catalogue = () => {
             onChange={e => handleFilterChange('min_price', e.target.value)}
             placeholder="Min"
             style={inputSt}
-            onFocus={e => { e.target.style.borderColor = 'var(--neon-orange)'; }}
+            onFocus={e => { e.target.style.borderColor = 'var(--primary)'; }}
             onBlur={e => { e.target.style.borderColor = 'var(--border-color)'; }}
           />
           <input
@@ -215,7 +215,7 @@ const Catalogue = () => {
             onChange={e => handleFilterChange('max_price', e.target.value)}
             placeholder="Max"
             style={inputSt}
-            onFocus={e => { e.target.style.borderColor = 'var(--neon-orange)'; }}
+            onFocus={e => { e.target.style.borderColor = 'var(--primary)'; }}
             onBlur={e => { e.target.style.borderColor = 'var(--border-color)'; }}
           />
         </div>
@@ -237,9 +237,9 @@ const Catalogue = () => {
               style={{
                 padding: '7px 14px', borderRadius: 999, cursor: 'pointer',
                 fontFamily: 'DM Sans', fontSize: 13, fontWeight: 600,
-                border: `1.5px solid ${filters.condition === opt.value ? 'var(--neon-orange)' : 'var(--border-color)'}`,
-                background: filters.condition === opt.value ? 'rgba(249,115,22,0.12)' : 'var(--input-bg)',
-                color: filters.condition === opt.value ? 'var(--neon-orange)' : 'var(--text-secondary)',
+                border: `1.5px solid ${filters.condition === opt.value ? 'var(--primary)' : 'var(--border-color)'}`,
+                background: filters.condition === opt.value ? 'var(--primary-glow)' : 'var(--input-bg)',
+                color: filters.condition === opt.value ? 'var(--primary)' : 'var(--text-secondary)',
                 transition: 'all 0.2s',
               }}
             >
@@ -256,7 +256,7 @@ const Catalogue = () => {
           value={filters.ordering}
           onChange={e => handleFilterChange('ordering', e.target.value)}
           style={{ ...inputSt, cursor: 'pointer' }}
-          onFocus={e => { e.target.style.borderColor = 'var(--neon-orange)'; }}
+          onFocus={e => { e.target.style.borderColor = 'var(--primary)'; }}
           onBlur={e => { e.target.style.borderColor = 'var(--border-color)'; }}
         >
           <option value="-created_at">Plus récents</option>
@@ -299,7 +299,7 @@ const Catalogue = () => {
               backdropFilter: 'blur(10px)', transition: 'all 0.2s',
             }}
             className="md-hidden"
-            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--neon-orange)'; e.currentTarget.style.color = 'var(--neon-orange)'; }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--primary)'; e.currentTarget.style.color = 'var(--primary)'; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-color)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
           >
             <SlidersHorizontal style={{ width: 16, height: 16 }} />
@@ -307,7 +307,7 @@ const Catalogue = () => {
             {activeFilterCount > 0 && (
               <span style={{
                 width: 20, height: 20, borderRadius: '50%',
-                background: 'var(--neon-orange)', color: '#fff',
+                background: 'var(--primary)', color: '#fff',
                 fontSize: 11, fontWeight: 800, display: 'flex',
                 alignItems: 'center', justifyContent: 'center',
               }}>{activeFilterCount}</span>
@@ -328,7 +328,7 @@ const Catalogue = () => {
             boxShadow: 'var(--glass-shadow)',
             position: 'sticky', top: 80,
           }} className="desktop-sidebar">
-            <SidebarContent />
+            {renderSidebarContent()}
           </aside>
 
           {/* === SIDEBAR MOBILE (drawer) === */}
@@ -374,7 +374,7 @@ const Catalogue = () => {
               >
                 <X style={{ width: 20, height: 20 }} />
               </button>
-              <SidebarContent />
+              {renderSidebarContent()}
             </div>
           </>
 
@@ -436,11 +436,11 @@ const Catalogue = () => {
                               style={{
                                 width: 36, height: 36, borderRadius: 10, cursor: 'pointer',
                                 fontFamily: 'Syne', fontSize: 13, fontWeight: 700,
-                                border: `1.5px solid ${currentPage === page ? 'var(--neon-orange)' : 'var(--border-color)'}`,
+                                border: `1.5px solid ${currentPage === page ? 'var(--primary)' : 'var(--border-color)'}`,
                                 background: currentPage === page ? 'rgba(249,115,22,0.15)' : 'var(--card-bg)',
-                                color: currentPage === page ? 'var(--neon-orange)' : 'var(--text-secondary)',
+                                color: currentPage === page ? 'var(--primary)' : 'var(--text-secondary)',
                                 transition: 'all 0.2s',
-                                boxShadow: currentPage === page ? '0 0 10px var(--neon-orange-glow)' : 'none',
+                                boxShadow: currentPage === page ? '0 0 10px var(--primary-glow)' : 'none',
                               }}
                             >
                               {page}
