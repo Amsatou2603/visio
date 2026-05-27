@@ -1,14 +1,20 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
 
 const CartContext = createContext(null);
 
 export const CartProvider = ({ children }) => {
   const [items, setItems] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const { user } = useAuth();
+
+  // Clé localStorage spécifique à l'utilisateur
+  const getCartKey = () => user ? `visio_cart_${user.id}` : 'visio_cart_guest';
 
   // Charger le panier depuis localStorage
   useEffect(() => {
-    const stored = localStorage.getItem('visio_cart');
+    const cartKey = getCartKey();
+    const stored = localStorage.getItem(cartKey);
     if (stored) {
       try {
         setItems(JSON.parse(stored));
@@ -16,12 +22,13 @@ export const CartProvider = ({ children }) => {
         setItems([]);
       }
     }
-  }, []);
+  }, [user]);
 
   // Sauvegarder dans localStorage à chaque changement
   useEffect(() => {
-    localStorage.setItem('visio_cart', JSON.stringify(items));
-  }, [items]);
+    const cartKey = getCartKey();
+    localStorage.setItem(cartKey, JSON.stringify(items));
+  }, [items, user]);
 
   const addItem = (product, quantity = 1) => {
     setItems(prev => {
@@ -54,7 +61,8 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = () => {
     setItems([]);
-    localStorage.removeItem('visio_cart');
+    const cartKey = getCartKey();
+    localStorage.removeItem(cartKey);
   };
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);

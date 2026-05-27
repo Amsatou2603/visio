@@ -18,9 +18,9 @@ const Field = ({ label, children, error }) => (
 
 const inputStyle = {
   width: '100%', padding: '11px 16px',
-  background: 'rgba(255,255,255,0.05)',
+  background: 'var(--input-bg)',
   backdropFilter: 'blur(10px)',
-  border: '1px solid rgba(255,255,255,0.12)',
+  border: '1px solid var(--border-strong)',
   borderRadius: 10, color: 'var(--text-primary)',
   fontFamily: 'Rajdhani', fontSize: 15, outline: 'none',
 };
@@ -92,9 +92,9 @@ const AddProduct = () => {
   };
 
   const sectionStyle = {
-    background: 'rgba(255,255,255,0.04)',
+    background: 'var(--card-bg)',
     backdropFilter: 'blur(20px)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    border: '1px solid var(--border)',
     borderRadius: 20, padding: '24px 28px',
     marginBottom: 20,
   };
@@ -108,7 +108,7 @@ const AddProduct = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 32 }}>
           <button
             onClick={() => navigate('/seller-dashboard')}
-            style={{ padding: '8px 16px', borderRadius: 10, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-secondary)', cursor: 'pointer', fontFamily: 'Rajdhani', fontWeight: 600 }}
+            style={{ padding: '8px 16px', borderRadius: 10, background: 'var(--input-bg)', border: '1px solid var(--border)', color: 'var(--text-secondary)', cursor: 'pointer', fontFamily: 'Rajdhani', fontWeight: 600 }}
           >
             ← Retour
           </button>
@@ -132,7 +132,7 @@ const AddProduct = () => {
 
           {/* Informations principales */}
           <div style={sectionStyle}>
-            <h3 style={{ fontFamily: 'Orbitron', fontSize: 12, fontWeight: 700, color: 'var(--neon-orange)', marginBottom: 20, letterSpacing: 1 }}>
+            <h3 style={{ fontFamily: 'Orbitron', fontSize: 12, fontWeight: 700, color: 'var(--primary)', marginBottom: 20, letterSpacing: 1 }}>
               <Package style={{ width: 14, height: 14, display: 'inline', marginRight: 8 }} />
               INFORMATIONS PRINCIPALES
             </h3>
@@ -144,8 +144,8 @@ const AddProduct = () => {
                   placeholder="Ex: iPhone 14 Pro Max 256Go"
                   style={inputStyle}
                   required
-                  onFocus={e => e.target.style.borderColor = 'rgba(249,115,22,0.5)'}
-                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
+                  onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+                  onBlur={e => e.target.style.borderColor = 'var(--border-strong)'}
                 />
               </Field>
 
@@ -155,8 +155,8 @@ const AddProduct = () => {
                   onChange={e => set('short_description', e.target.value)}
                   placeholder="Résumé en une phrase"
                   style={inputStyle}
-                  onFocus={e => e.target.style.borderColor = 'rgba(249,115,22,0.5)'}
-                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
+                  onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+                  onBlur={e => e.target.style.borderColor = 'var(--border-strong)'}
                 />
               </Field>
 
@@ -168,8 +168,8 @@ const AddProduct = () => {
                   rows={5}
                   style={{ ...inputStyle, resize: 'vertical' }}
                   required
-                  onFocus={e => e.target.style.borderColor = 'rgba(249,115,22,0.5)'}
-                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
+                  onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+                  onBlur={e => e.target.style.borderColor = 'var(--border-strong)'}
                 />
               </Field>
             </div>
@@ -177,7 +177,7 @@ const AddProduct = () => {
 
           {/* Prix et stock */}
           <div style={sectionStyle}>
-            <h3 style={{ fontFamily: 'Orbitron', fontSize: 12, fontWeight: 700, color: 'var(--neon-orange)', marginBottom: 20, letterSpacing: 1 }}>
+            <h3 style={{ fontFamily: 'Orbitron', fontSize: 12, fontWeight: 700, color: 'var(--primary)', marginBottom: 20, letterSpacing: 1 }}>
               <DollarSign style={{ width: 14, height: 14, display: 'inline', marginRight: 8 }} />
               PRIX & STOCK
             </h3>
@@ -190,8 +190,8 @@ const AddProduct = () => {
                   placeholder="150000"
                   style={inputStyle}
                   required
-                  onFocus={e => e.target.style.borderColor = 'rgba(249,115,22,0.5)'}
-                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
+                  onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+                  onBlur={e => e.target.style.borderColor = 'var(--border-strong)'}
                 />
               </Field>
               <Field label="Ancien prix (promo)" error={err('old_price')}>
@@ -201,8 +201,8 @@ const AddProduct = () => {
                   onChange={e => set('old_price', e.target.value)}
                   placeholder="200000"
                   style={inputStyle}
-                  onFocus={e => e.target.style.borderColor = 'rgba(249,115,22,0.5)'}
-                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
+                  onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+                  onBlur={e => e.target.style.borderColor = 'var(--border-strong)'}
                 />
               </Field>
               <Field label="Stock *" error={err('stock')}>
@@ -213,8 +213,8 @@ const AddProduct = () => {
                   placeholder="10"
                   style={inputStyle}
                   required
-                  onFocus={e => e.target.style.borderColor = 'rgba(249,115,22,0.5)'}
-                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
+                  onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+                  onBlur={e => e.target.style.borderColor = 'var(--border-strong)'}
                 />
               </Field>
             </div>
@@ -222,7 +222,7 @@ const AddProduct = () => {
 
           {/* Catégorie et état */}
           <div style={sectionStyle}>
-            <h3 style={{ fontFamily: 'Orbitron', fontSize: 12, fontWeight: 700, color: 'var(--neon-orange)', marginBottom: 20, letterSpacing: 1 }}>
+            <h3 style={{ fontFamily: 'Orbitron', fontSize: 12, fontWeight: 700, color: 'var(--primary)', marginBottom: 20, letterSpacing: 1 }}>
               <Tag style={{ width: 14, height: 14, display: 'inline', marginRight: 8 }} />
               CATÉGORIE & ÉTAT
             </h3>
@@ -276,11 +276,11 @@ const AddProduct = () => {
                     onClick={() => set(key, !form[key])}
                     style={{
                       width: 44, height: 24, borderRadius: 12,
-                      background: form[key] ? 'var(--neon-orange)' : 'rgba(255,255,255,0.1)',
-                      border: `1px solid ${form[key] ? 'var(--neon-orange)' : 'rgba(255,255,255,0.2)'}`,
+                      background: form[key] ? 'var(--primary)' : 'var(--input-bg)',
+                      border: `1px solid ${form[key] ? 'var(--primary)' : 'var(--border)'}`,
                       position: 'relative', cursor: 'pointer',
                       transition: 'all 0.3s',
-                      boxShadow: form[key] ? '0 0 8px var(--neon-orange-glow)' : 'none',
+                      boxShadow: form[key] ? '0 0 8px var(--primary-glow)' : 'none',
                     }}
                   >
                     <div style={{
@@ -300,26 +300,26 @@ const AddProduct = () => {
 
           {/* Images */}
           <div style={sectionStyle}>
-            <h3 style={{ fontFamily: 'Orbitron', fontSize: 12, fontWeight: 700, color: 'var(--neon-orange)', marginBottom: 20, letterSpacing: 1 }}>
+            <h3 style={{ fontFamily: 'Orbitron', fontSize: 12, fontWeight: 700, color: 'var(--primary)', marginBottom: 20, letterSpacing: 1 }}>
               <Image style={{ width: 14, height: 14, display: 'inline', marginRight: 8 }} />
               IMAGES DU PRODUIT
             </h3>
             <label style={{
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
               padding: '32px', borderRadius: 14, cursor: 'pointer',
-              border: '2px dashed rgba(249,115,22,0.3)',
-              background: 'rgba(249,115,22,0.04)',
+              border: '2px dashed var(--primary)',
+              background: 'var(--primary-subtle)',
               transition: 'all 0.2s',
             }}
-              onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(249,115,22,0.6)'}
-              onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(249,115,22,0.3)'}
+              onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--primary)'}
+              onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--primary)'}
             >
               <input type="file" multiple accept="image/*" onChange={handleImages} style={{ display: 'none' }} />
-              <Image style={{ width: 32, height: 32, color: 'rgba(249,115,22,0.5)', marginBottom: 10 }} />
+              <Image style={{ width: 32, height: 32, color: 'var(--primary)', marginBottom: 10 }} />
               <p style={{ fontFamily: 'Rajdhani', fontSize: 14, color: 'var(--text-secondary)' }}>
                 Cliquez pour ajouter des images
               </p>
-              <p style={{ fontFamily: 'Rajdhani', fontSize: 12, color: 'rgba(255,255,255,0.3)', marginTop: 4 }}>
+              <p style={{ fontFamily: 'Rajdhani', fontSize: 12, color: 'var(--text-tertiary)', marginTop: 4 }}>
                 PNG, JPG jusqu'à 5MB — la 1ère image sera l'image principale
               </p>
             </label>
@@ -331,13 +331,13 @@ const AddProduct = () => {
                     <img
                       src={src}
                       alt=""
-                      style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 10, border: i === 0 ? '2px solid var(--neon-orange)' : '1px solid rgba(255,255,255,0.1)' }}
+                      style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 10, border: i === 0 ? '2px solid var(--primary)' : '1px solid var(--border)' }}
                     />
                     {i === 0 && (
                       <span style={{
                         position: 'absolute', bottom: -6, left: '50%', transform: 'translateX(-50%)',
                         fontSize: 9, fontFamily: 'Orbitron', fontWeight: 700,
-                        background: 'var(--neon-orange)', color: '#fff',
+                        background: 'var(--primary)', color: '#fff',
                         padding: '2px 6px', borderRadius: 4,
                       }}>PRINCIPALE</span>
                     )}
@@ -349,7 +349,7 @@ const AddProduct = () => {
 
           {/* SEO */}
           <div style={sectionStyle}>
-            <h3 style={{ fontFamily: 'Orbitron', fontSize: 12, fontWeight: 700, color: 'var(--neon-orange)', marginBottom: 20, letterSpacing: 1 }}>
+            <h3 style={{ fontFamily: 'Orbitron', fontSize: 12, fontWeight: 700, color: 'var(--primary)', marginBottom: 20, letterSpacing: 1 }}>
               <BarChart style={{ width: 14, height: 14, display: 'inline', marginRight: 8 }} />
               SEO (OPTIONNEL)
             </h3>
@@ -360,8 +360,8 @@ const AddProduct = () => {
                   onChange={e => set('meta_title', e.target.value)}
                   placeholder="Laissez vide pour utiliser le nom du produit"
                   style={inputStyle}
-                  onFocus={e => e.target.style.borderColor = 'rgba(249,115,22,0.5)'}
-                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
+                  onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+                  onBlur={e => e.target.style.borderColor = 'var(--border-strong)'}
                 />
               </Field>
               <Field label="Description SEO">
@@ -371,8 +371,8 @@ const AddProduct = () => {
                   placeholder="Description pour les moteurs de recherche (160 caractères max)"
                   rows={2}
                   style={{ ...inputStyle, resize: 'none' }}
-                  onFocus={e => e.target.style.borderColor = 'rgba(249,115,22,0.5)'}
-                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
+                  onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+                  onBlur={e => e.target.style.borderColor = 'var(--border-strong)'}
                 />
               </Field>
             </div>
