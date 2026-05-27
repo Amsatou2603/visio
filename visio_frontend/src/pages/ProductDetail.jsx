@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ShoppingCart, Star, Plus, Minus, Check } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import Loader from '../components/Loader';
+import ProductCard from '../components/ProductCard';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
@@ -78,19 +79,6 @@ const ProductDetail = () => {
       setReviewLoading(false);
     }
   };
-
-  {similar.length > 0 && (
-  <div style={{ marginTop: 48 }}>
-    <h2 style={{ fontFamily: 'Orbitron', fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 24 }}>
-      Produits similaires
-    </h2>
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
-      {similar.map(p => (
-        <ProductCard key={p.id} product={p} />
-      ))}
-    </div>
-  </div>
-  )}
 
   if (loading) return <Loader text="Chargement du produit..." />;
   if (!product) return (
@@ -344,6 +332,17 @@ const ProductDetail = () => {
             </div>
           )}
         </div>
+
+        {similar.length > 0 && (
+          <div style={{ marginTop: 48 }}>
+            <h2 className="section-title" style={{ marginBottom: 24 }}>Produits similaires</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 20 }}>
+              {similar.map(p => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

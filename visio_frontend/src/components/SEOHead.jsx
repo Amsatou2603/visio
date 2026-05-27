@@ -9,7 +9,8 @@ const SEOHead = ({
   type = 'website',
 }) => {
   const fullTitle = title.includes('Visio') ? title : `${title} | Visio`;
-  const fullUrl = `https://visio-market.vercel.app${url}`;
+  const siteUrl = process.env.REACT_APP_SITE_URL || 'https://visio-ten.vercel.app';
+  const fullUrl = `${siteUrl}${url}`;
 
   return (
     <Helmet>

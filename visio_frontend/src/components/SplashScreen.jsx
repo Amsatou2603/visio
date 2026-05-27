@@ -14,14 +14,12 @@ const SplashScreen = ({ onDone }) => {
   const [exiting, setExiting] = useState(false);
 
   useEffect(() => {
-    // Progression sur 5 secondes
     const steps = [
-      { target: 15, delay: 300 },
-      { target: 35, delay: 900 },
-      { target: 55, delay: 1800 },
-      { target: 72, delay: 2700 },
-      { target: 88, delay: 3700 },
-      { target: 100, delay: 4500 },
+      { target: 20, delay: 200 },
+      { target: 45, delay: 600 },
+      { target: 70, delay: 1200 },
+      { target: 90, delay: 1800 },
+      { target: 100, delay: 2300 },
     ];
 
     const timers = steps.map(({ target, delay }) =>
@@ -33,11 +31,11 @@ const SplashScreen = ({ onDone }) => {
       setMsgIndex(prev => (prev + 1) % messages.length);
     }, 1000);
 
-    // Sortie après 5s
+    // Sortie après 2.5s (assez court pour ne pas bloquer l'accès au site)
     const exitTimer = setTimeout(() => {
       setExiting(true);
-      setTimeout(onDone, 500);
-    }, 5000);
+      setTimeout(onDone, 400);
+    }, 2500);
 
     return () => {
       timers.forEach(clearTimeout);

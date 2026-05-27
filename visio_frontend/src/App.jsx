@@ -14,6 +14,7 @@ import StarField from './components/StarField';
 import WhatsAppCTA from './components/WhatsAppCTA';
 import SplashScreen from './components/SplashScreen';
 import PageTransition from './components/PageTransition';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const Home = React.lazy(() => import('./pages/Home'));
 const Catalogue = React.lazy(() => import('./pages/Catalogue'));
@@ -87,9 +88,25 @@ const AppContent = () => {
   );
 };
 
+const SPLASH_KEY = 'visio_splash_done';
+
 const App = () => {
-  const [splashDone, setSplashDone] = useState(false);
-  const handleSplashDone = useCallback(() => setSplashDone(true), []);
+  const [splashDone, setSplashDone] = useState(() => {
+    try {
+      return sessionStorage.getItem(SPLASH_KEY) === '1';
+    } catch {
+      return false;
+    }
+  });
+
+  const handleSplashDone = useCallback(() => {
+    try {
+      sessionStorage.setItem(SPLASH_KEY, '1');
+    } catch {
+      // ignore storage errors (private mode, etc.)
+    }
+    setSplashDone(true);
+  }, []);
 
   return (
     <HelmetProvider>
@@ -97,14 +114,13 @@ const App = () => {
         <AuthProvider>
           <CartProvider>
             <WishlistProvider>
-              {!splashDone && <SplashScreen onDone={handleSplashDone} />}
               <BrowserRouter>
                 <div className="page-bg" />
-                <div className="neon-orb neon-orb-1" />
-                <div className="neon-orb neon-orb-2" />
-                <div className="neon-orb neon-orb-3" />
                 <StarField />
-                {splashDone && <AppContent />}
+                <ErrorBoundary>
+                  <AppContent />
+                </ErrorBoundary>
+                {!splashDone && <SplashScreen onDone={handleSplashDone} />}
               </BrowserRouter>
             </WishlistProvider>
           </CartProvider>

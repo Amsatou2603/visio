@@ -49,7 +49,12 @@ api.interceptors.response.use(
           return Promise.reject(refreshError);
         }
       } else {
-        window.location.href = '/login';
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user');
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login';
+        }
       }
     }
 
