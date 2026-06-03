@@ -5,10 +5,13 @@
       <stop offset="100%" style="stop-color:#c1121f"/>
     </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#e63946" flood-opacity="0.3"/>
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.4"/>
     </filter>
   </defs>
-  <rect width="100" height="100" rx="24" fill="url(#g)" filter="url(#shadow)"/>
-  <text x="50" y="70" font-family="Syne, Arial Black, sans-serif" font-size="58"
-    font-weight="900" fill="white" text-anchor="middle" letter-spacing="-2">V</text>
+  <!-- Background avec coins arrondis pour PWA -->
+  <rect width="100" height="100" rx="18" fill="url(#g)" filter="url(#shadow)"/>
+  <!-- V plus grand et plus épais pour meilleure visibilité -->
+  <text x="50" y="74" font-family="Syne, Arial Black, sans-serif" font-size="68"
+    font-weight="900" fill="white" text-anchor="middle" letter-spacing="-3"
+    stroke="rgba(0,0,0,0.1)" stroke-width="1">V</text>
 </svg>

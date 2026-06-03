@@ -498,6 +498,7 @@ const Navbar = () => {
                   <>
                     <MobileLink to="/catalogue" label="Catalogue" onClick={() => setMobileOpen(false)} />
                     <MobileLink to="/partenaires" label="Nos vendeurs" onClick={() => setMobileOpen(false)} />
+                    <MobileLink to="/comparateur" label="🔍 Comparer" onClick={() => setMobileOpen(false)} />
                     {isAuthenticated && (
                       <>
                         <MobileLink to="/dashboard" label="Mes commandes" onClick={() => setMobileOpen(false)} />
