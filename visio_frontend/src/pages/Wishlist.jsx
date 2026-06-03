@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Heart, ShoppingBag, Trash2, ArrowRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Heart, ShoppingBag, Trash2, ArrowRight, ArrowLeft } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import ProductCard from '../components/ProductCard';
 import { useWishlist } from '../context/WishlistContext';
@@ -10,13 +10,23 @@ import AuthModal from '../components/AuthModal';
 const Wishlist = () => {
   const { items, toggle, fetchWishlist } = useWishlist();
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [showAuth, setShowAuth] = React.useState(false);
 
   if (!isAuthenticated) {
     return (
       <>
         <SEOHead title="Ma Liste de Souhaits" url="/wishlist" />
-        <div className="max-w-2xl mx-auto px-4 py-20 text-center">
+        <div className="max-w-2xl mx-auto px-4 py-10 text-center">
+          <div style={{ textAlign: 'left', marginBottom: 20 }}>
+            <button
+              onClick={() => navigate(-1)}
+              className="btn-secondary"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+            >
+              <ArrowLeft style={{ width: 16, height: 16 }} /> Retour
+            </button>
+          </div>
           <Heart className="w-20 h-20 mx-auto mb-6" style={{ color: 'var(--primary)' }} />
           <h1 className="text-2xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>Connectez-vous pour voir votre liste</h1>
           <p className="mb-8" style={{ color: 'var(--text-secondary)' }}>Vous devez être connecté pour accéder à votre liste de souhaits.</p>
@@ -37,7 +47,16 @@ const Wishlist = () => {
     return (
       <>
         <SEOHead title="Ma Liste de Souhaits" url="/wishlist" />
-        <div className="max-w-2xl mx-auto px-4 py-20 text-center">
+        <div className="max-w-2xl mx-auto px-4 py-10 text-center">
+          <div style={{ textAlign: 'left', marginBottom: 20 }}>
+            <button
+              onClick={() => navigate(-1)}
+              className="btn-secondary"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+            >
+              <ArrowLeft style={{ width: 16, height: 16 }} /> Retour
+            </button>
+          </div>
           <Heart className="w-20 h-20 mx-auto mb-6" style={{ color: 'var(--text-muted)' }} />
           <h1 className="text-2xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>Votre liste est vide</h1>
           <p className="mb-8" style={{ color: 'var(--text-secondary)' }}>Ajoutez des produits à votre liste de souhaits pour les retrouver plus tard.</p>
@@ -53,6 +72,13 @@ const Wishlist = () => {
     <>
       <SEOHead title="Ma Liste de Souhaits" url="/wishlist" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <button
+          onClick={() => navigate(-1)}
+          className="btn-secondary mb-6"
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+        >
+          <ArrowLeft style={{ width: 16, height: 16 }} /> Retour
+        </button>
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
             Ma Liste de Souhaits <span className="font-normal text-lg" style={{ color: 'var(--text-secondary)' }}>({items.length} article{items.length > 1 ? 's' : ''})</span>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Package, Clock, CheckCircle, XCircle, Truck } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Package, Clock, CheckCircle, XCircle, Truck, ArrowLeft } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import Loader from '../components/Loader';
 import { useAuth } from '../context/AuthContext';
@@ -20,6 +20,7 @@ const STATUS_CONFIG = {
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const greeting = getGreeting();
@@ -42,6 +43,13 @@ const Dashboard = () => {
     <>
       <SEOHead title="Mon espace" url="/dashboard" />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <button
+          onClick={() => navigate(-1)}
+          className="btn-secondary mb-6"
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+        >
+          <ArrowLeft style={{ width: 16, height: 16 }} /> Retour
+        </button>
         {/* Header */}
         <div className="card p-6 mb-8 text-white" style={{
           background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)',

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import SEOHead from '../components/SEOHead';
 import { useAuth } from '../context/AuthContext';
+import { ArrowLeft } from 'lucide-react';
 
 const Login = () => {
   const { login } = useAuth();
@@ -29,8 +30,15 @@ const Login = () => {
   return (
     <>
       <SEOHead title="Connexion" url="/login" />
-      <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
+      <div className="min-h-[80vh] flex flex-col items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
+          <button
+            onClick={() => navigate(-1)}
+            className="btn-secondary mb-6"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+          >
+            <ArrowLeft style={{ width: 16, height: 16 }} /> Retour
+          </button>
           <div className="text-center mb-8">
             <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4" style={{ background: 'var(--primary)' }}> 
               <span className="text-white font-bold text-xl">V</span>

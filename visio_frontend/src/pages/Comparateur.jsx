@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Search, Star, ShoppingCart, ArrowRight } from 'lucide-react';
+import { X, Plus, Search, Star, ShoppingCart, ArrowRight, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import SEOHead from '../components/SEOHead';
 import { useCart } from '../context/CartContext';
 import api from '../services/api';
@@ -175,6 +176,7 @@ const CompareRow = ({ label, values, highlight = false, isPrice = false }) => {
 };
 
 const Comparateur = () => {
+  const navigate = useNavigate();
   const [compared, setCompared] = useState([]);
   const [search, setSearch] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -236,7 +238,13 @@ const Comparateur = () => {
       />
 
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '32px 16px 60px' }}>
-
+        <button
+          onClick={() => navigate(-1)}
+          className="btn-secondary mb-6"
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+        >
+          <ArrowLeft style={{ width: 16, height: 16 }} /> Retour
+        </button>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 48 }}>
           <div style={{

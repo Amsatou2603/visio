@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Search, SlidersHorizontal, X } from 'lucide-react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { Search, SlidersHorizontal, X, ArrowLeft } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import ProductCard from '../components/ProductCard';
 import Loader from '../components/Loader';
@@ -8,6 +8,7 @@ import api from '../services/api';
 
 const Catalogue = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
@@ -279,6 +280,13 @@ const Catalogue = () => {
 
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '32px 16px 48px' }}>
 
+        <button
+          onClick={() => navigate(-1)}
+          className="btn-secondary mb-6"
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+        >
+          <ArrowLeft style={{ width: 16, height: 16 }} /> Retour
+        </button>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28, gap: 12, flexWrap: 'wrap' }}>
           <div>

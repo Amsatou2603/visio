@@ -24,7 +24,7 @@ const Footer = () => {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 boxShadow: '0 3px 12px rgba(230,57,70,0.3)',
               }}>
-                <span style={{ color: '#fff', fontFamily: 'Syne, sans-serif', fontWeight: 900, fontSize: 16 }}>V</span>
+                <span style={{ color: '#fff', fontFamily: 'Syne, sans-serif', fontWeight: 900, fontSize: 24, lineHeight: 1 }}>V</span>
               </div>
               <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 900, fontSize: 18, color: 'var(--text-primary)', letterSpacing: 1 }}>VISIO</span>
             </div>

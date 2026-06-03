@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   Package, TrendingUp, ShoppingBag, DollarSign,
   Plus, Edit, Trash2, Eye, Star, AlertCircle,
-  ArrowUpRight, ArrowDownRight,
+  ArrowUpRight, ArrowDownRight, ArrowLeft,
 } from 'lucide-react';
 import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
@@ -168,6 +168,13 @@ const SellerDashboard = () => {
       <SEOHead title="Tableau de bord Vendeur — Visio" />
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '24px 16px 48px' }}>
 
+        <button
+          onClick={() => navigate(-1)}
+          className="btn-secondary mb-6"
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+        >
+          <ArrowLeft style={{ width: 16, height: 16 }} /> Retour
+        </button>
         {/* Header */}
         <div style={{
           padding: '22px 26px', marginBottom: 24,

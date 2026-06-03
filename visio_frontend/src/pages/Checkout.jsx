@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, ArrowLeft } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -117,6 +117,13 @@ const Checkout = () => {
     <>
       <SEOHead title="Finaliser la commande" url="/checkout" />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <button
+          onClick={() => navigate(-1)}
+          className="btn-secondary mb-6"
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+        >
+          <ArrowLeft style={{ width: 16, height: 16 }} /> Retour
+        </button>
         <h1 className="text-2xl font-bold text-gray-900 mb-8">Finaliser la commande</h1>
 
         {/* Steps */}

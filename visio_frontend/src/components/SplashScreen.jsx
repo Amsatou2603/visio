@@ -80,8 +80,8 @@ const SplashScreen = ({ onDone }) => {
           color: '#fff',
           fontFamily: 'Syne, sans-serif',
           fontWeight: 900,
-          fontSize: 42,
-          letterSpacing: -2,
+          fontSize: 64,
+          lineHeight: 1,
         }}>V</span>
       </div>
 

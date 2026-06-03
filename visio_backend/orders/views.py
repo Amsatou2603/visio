@@ -1,5 +1,8 @@
+# pyrefly: ignore [missing-import]
 from rest_framework import generics, permissions, status
+# pyrefly: ignore [missing-import]
 from rest_framework.response import Response
+# pyrefly: ignore [missing-import]
 from rest_framework.views import APIView
 from .models import Order, OrderItem
 from .serializers import OrderSerializer, OrderCreateSerializer
@@ -70,11 +73,12 @@ class OrderListCreateView(generics.ListCreateAPIView):
             subtotal=subtotal,
             shipping_cost=shipping_cost,
             total=total,
+            currency='XOF',
         )
 
         for item_data in order_items_data:
             product = item_data.pop('product')
-            OrderItem.objects.create(order=order, **item_data)
+            OrderItem.objects.create(order=order, product=product, **item_data)
             product.stock -= item_data['quantity']
             product.save(update_fields=['stock'])
 

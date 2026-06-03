@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Store, User, Lock, Phone, MapPin, FileText, Tag } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Store, User, Lock, Phone, MapPin, FileText, Tag, ArrowLeft } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import api from '../services/api';
 
@@ -65,6 +65,7 @@ const InputField = ({ icon: Icon, label, name, type = 'text', placeholder, texta
 const steps = ['Compte', 'Boutique', 'Confirmation'];
 
 const RegisterSeller = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -127,6 +128,17 @@ const RegisterSeller = () => {
 
           {/* Header */}
           <div style={{ textAlign: 'center', marginBottom: 40 }}>
+            {step === 0 && (
+              <div style={{ textAlign: 'left', marginBottom: 20 }}>
+                <button
+                  onClick={() => navigate(-1)}
+                  className="btn-secondary"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+                >
+                  <ArrowLeft style={{ width: 16, height: 16 }} /> Retour
+                </button>
+              </div>
+            )}
             <div style={{
               width: 64, height: 64,
               background: 'linear-gradient(135deg, var(--neon-orange), hsl(22,95%,35%))',

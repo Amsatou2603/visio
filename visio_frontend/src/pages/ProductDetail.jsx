@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { ShoppingCart, Star, Plus, Minus, Check } from 'lucide-react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { ShoppingCart, Star, Plus, Minus, Check, ArrowLeft } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import Loader from '../components/Loader';
 import ProductCard from '../components/ProductCard';
@@ -12,6 +12,7 @@ import { formatPrice, formatDate } from '../utils/formatPrice';
 
 const ProductDetail = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const { addItem, isInCart, items, updateQuantity } = useCart();
   const { isAuthenticated } = useAuth();
   const [product, setProduct] = useState(null);
@@ -63,6 +64,17 @@ const ProductDetail = () => {
     }
   };
 
+  const handleBuyNow = () => {
+    if (!inCart) {
+      addItem(product, quantity);
+    }
+    if (isAuthenticated) {
+      navigate('/checkout');
+    } else {
+      setShowAuth(true);
+    }
+  };
+
   const handleSubmitReview = async (e) => {
     e.preventDefault();
     setReviewLoading(true);
@@ -102,6 +114,13 @@ const ProductDetail = () => {
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <button
+          onClick={() => navigate(-1)}
+          className="btn-secondary mb-6"
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+        >
+          <ArrowLeft style={{ width: 16, height: 16 }} /> Retour
+        </button>
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6">
           <Link to="/" className="hover:text-primary-500">Accueil</Link>
@@ -236,20 +255,14 @@ const ProductDetail = () => {
             )}
 
             <AuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} reason="acheter" returnTo="/checkout" />
-            {isAuthenticated ? (
-              <Link to="/checkout" className="btn-outline w-full text-center block py-3">
-                Commander maintenant
-              </Link>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setShowAuth(true)}
-                className="btn-outline w-full text-center block py-3"
-                style={{ cursor: 'pointer' }}
-              >
-                Commander maintenant
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={handleBuyNow}
+              className="btn-outline w-full text-center block py-3"
+              style={{ cursor: 'pointer' }}
+            >
+              Commander maintenant
+            </button>
           </div>
         </div>
 

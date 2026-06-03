@@ -115,7 +115,7 @@ const Navbar = () => {
                 boxShadow: '0 3px 12px rgba(230,57,70,0.3)',
                 flexShrink: 0,
               }}>
-                <span style={{ color: '#fff', fontFamily: 'Syne, sans-serif', fontWeight: 900, fontSize: 17 }}>V</span>
+                <span style={{ color: '#fff', fontFamily: 'Syne, sans-serif', fontWeight: 900, fontSize: 28, lineHeight: 1 }}>V</span>
               </div>
               <span style={{
                 fontFamily: 'Syne, sans-serif', fontWeight: 800,

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Search, Store, Package, Star } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Search, Store, Package, Star, ArrowLeft } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import Loader from '../components/Loader';
 import api from '../services/api';
 
 const Partenaires = () => {
+  const navigate = useNavigate();
   const [sellers, setSellers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -41,6 +42,13 @@ const Partenaires = () => {
 
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '48px 16px' }}>
 
+        <button
+          onClick={() => navigate(-1)}
+          className="btn-secondary mb-6"
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+        >
+          <ArrowLeft style={{ width: 16, height: 16 }} /> Retour
+        </button>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 56 }}>
           <div style={{

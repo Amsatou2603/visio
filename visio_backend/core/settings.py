@@ -209,6 +209,12 @@ if os.environ.get('CORS_ALLOWED_ORIGINS'):
     origins = os.environ.get('CORS_ALLOWED_ORIGINS', '').split(',')
     CORS_ALLOWED_ORIGINS += [origin.strip().rstrip('/') for origin in origins if origin.strip()]
 
+# Allow Flutter web app during development
+if DJANGO_ENV == 'development':
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOW_ALL_ORIGINS = False
+
 CORS_ALLOW_CREDENTIALS = True
 
 # PayTech (paiement mobile money)

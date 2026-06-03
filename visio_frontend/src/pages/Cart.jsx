@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, ArrowLeft } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import AuthModal from '../components/AuthModal';
 import { useCart } from '../context/CartContext';
@@ -10,13 +10,23 @@ import { formatPrice } from '../utils/formatPrice';
 const Cart = () => {
   const { items, removeItem, updateQuantity, totalItems, totalPrice, clearCart } = useCart();
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [showAuth, setShowAuth] = useState(false);
 
   if (items.length === 0) {
     return (
       <>
         <SEOHead title="Mon Panier" url="/cart" />
-        <div className="max-w-2xl mx-auto px-4 py-20 text-center">
+        <div className="max-w-2xl mx-auto px-4 py-10 text-center">
+          <div style={{ textAlign: 'left', marginBottom: 20 }}>
+            <button
+              onClick={() => navigate(-1)}
+              className="btn-secondary"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+            >
+              <ArrowLeft style={{ width: 16, height: 16 }} /> Retour
+            </button>
+          </div>
           <ShoppingBag className="w-20 h-20 text-gray-200 mx-auto mb-6" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Votre panier est vide</h1>
           <p className="text-gray-500 mb-8">Ajoutez des produits pour commencer vos achats.</p>
@@ -32,6 +42,13 @@ const Cart = () => {
     <>
       <SEOHead title="Mon Panier" url="/cart" />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <button
+          onClick={() => navigate(-1)}
+          className="btn-secondary mb-6"
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+        >
+          <ArrowLeft style={{ width: 16, height: 16 }} /> Retour
+        </button>
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold text-gray-900">
             Mon panier <span className="text-gray-400 font-normal text-lg">({totalItems} article{totalItems > 1 ? 's' : ''})</span>
