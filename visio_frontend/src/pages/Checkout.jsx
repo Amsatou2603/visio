@@ -26,6 +26,17 @@ const Checkout = () => {
   const [success, setSuccess] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
+  // Vérification de l'authentification
+  React.useEffect(() => {
+    console.log('🔍 État utilisateur:', user); // Debug
+    console.log('🛒 Items du panier:', items); // Debug
+    
+    if (!user) {
+      console.log('❌ Utilisateur non connecté, redirection vers authentification'); // Debug
+      setShowAuthModal(true);
+    }
+  }, [user]);
+
   const [form, setForm] = useState({
     shipping_name: user?.full_name || '',
     shipping_phone: user?.phone || '',
@@ -45,16 +56,49 @@ const Checkout = () => {
   const handlePlaceOrder = async () => {
     setLoading(true);
     setError('');
+    
+    console.log('🛒 Début création commande...'); // Debug
+    console.log('Form data:', form); // Debug
+    console.log('Items:', items); // Debug
+    
     try {
       const orderData = {
         ...form,
         items: items.map(i => ({ product_id: i.id, quantity: i.quantity })),
       };
+      
+      console.log('Order data à envoyer:', orderData); // Debug
+      
       const res = await api.post('/orders/', orderData);
+      
+      console.log('✅ Commande créée:', res.data); // Debug
+      
       setOrderId(res.data.id);
       setStep(2);
     } catch (err) {
-      setError(err.response?.data?.error || 'Erreur lors de la commande.');
+      console.error('❌ Erreur création commande:', err); // Debug
+      console.error('Response data:', err.response?.data); // Debug
+      console.error('Response status:', err.response?.status); // Debug
+      
+      // Gestion plus précise des erreurs
+      let errorMessage = 'Erreur lors de la commande.';
+      
+      if (err.response?.status === 401) {
+        errorMessage = 'Vous devez être connecté pour passer commande.';
+      } else if (err.response?.status === 400) {
+        const errorData = err.response?.data;
+        if (typeof errorData === 'object') {
+          // Si c'est un objet avec des erreurs de validation
+          const firstError = Object.values(errorData)[0];
+          errorMessage = Array.isArray(firstError) ? firstError[0] : firstError;
+        } else if (errorData?.error) {
+          errorMessage = errorData.error;
+        }
+      } else if (err.response?.data?.error) {
+        errorMessage = err.response.data.error;
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -63,25 +107,61 @@ const Checkout = () => {
   const handlePayment = async () => {
     setLoading(true);
     setError('');
+    
+    console.log('💳 Début initiation paiement...'); // Debug
+    console.log('Order ID:', orderId); // Debug
+    console.log('Payment data:', payment); // Debug
+    
     try {
-      const res = await api.post('/payments/initiate/', {
+      const paymentData = {
         order_id: orderId,
         method: payment.method,
         phone_number: payment.phone_number,
-      });
+      };
+      
+      console.log('Payment data à envoyer:', paymentData); // Debug
+      
+      const res = await api.post('/payments/initiate/', paymentData);
+      
+      console.log('✅ Réponse paiement:', res.data); // Debug
 
       // If backend returns a payment_url (PayTech), redirect the user
       if (res.data && (res.data.payment_url || res.data.redirect_url)) {
         const url = res.data.payment_url || res.data.redirect_url;
+        console.log('🔀 Redirection vers:', url); // Debug
         window.location.href = url;
         return;
       }
 
       // Fallback: assume payment succeeded (simulation)
+      console.log('✅ Paiement simulé réussi'); // Debug
       clearCart();
       setSuccess(true);
     } catch (err) {
-      setError(err.response?.data?.error || 'Erreur lors du paiement.');
+      console.error('❌ Erreur paiement:', err); // Debug
+      console.error('Response data:', err.response?.data); // Debug
+      console.error('Response status:', err.response?.status); // Debug
+      
+      // Gestion plus précise des erreurs de paiement
+      let errorMessage = 'Erreur lors du paiement.';
+      
+      if (err.response?.status === 401) {
+        errorMessage = 'Session expirée. Veuillez vous reconnecter.';
+      } else if (err.response?.status === 404) {
+        errorMessage = 'Commande introuvable.';
+      } else if (err.response?.status === 400) {
+        const errorData = err.response?.data;
+        if (errorData?.error) {
+          errorMessage = errorData.error;
+        } else if (typeof errorData === 'object') {
+          const firstError = Object.values(errorData)[0];
+          errorMessage = Array.isArray(firstError) ? firstError[0] : firstError;
+        }
+      } else if (err.response?.data?.error) {
+        errorMessage = err.response.data.error;
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

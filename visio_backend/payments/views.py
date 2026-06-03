@@ -53,7 +53,14 @@ class InitiatePaymentView(APIView):
 
         # If PayTech is configured, call its API to create a payment session
         paytech_url = getattr(settings, 'PAYTECH_API_URL', '').rstrip('/')
-        if settings.PAYTECH_API_KEY and settings.PAYTECH_API_SECRET and paytech_url:
+        paytech_api_key = settings.PAYTECH_API_KEY
+        paytech_api_secret = settings.PAYTECH_API_SECRET
+        
+        # Vérifier si Paytech est configuré avec de vraies clés (pas de test)
+        paytech_configured = (paytech_url and paytech_api_key and paytech_api_secret and 
+                             not paytech_api_key.startswith('test_'))
+        
+        if paytech_configured:
             payload = {
                 'amount': str(order.total),
                 'currency': order.currency,
@@ -65,7 +72,7 @@ class InitiatePaymentView(APIView):
                 'method': data['method'],
             }
             headers = {
-                'Authorization': f'Bearer {settings.PAYTECH_API_KEY}',
+                'Authorization': f'Bearer {paytech_api_key}',
                 'Content-Type': 'application/json',
             }
             try:
@@ -86,6 +93,7 @@ class InitiatePaymentView(APIView):
                 # Log and fallback to simulation
                 payment.provider_response = {'error': str(e)}
                 payment.save()
+                # Continue to simulation fallback
 
         # Fallback: simulate payment completion (useful for sandbox/testing)
         payment.status = 'completed'

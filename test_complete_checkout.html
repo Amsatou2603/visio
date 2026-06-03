@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Checkout Visio</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .step { padding: 15px; margin: 10px 0; border-radius: 8px; }
+        .success { background: #d4edda; border-left: 4px solid #28a745; }
+        .error { background: #f8d7da; border-left: 4px solid #dc3545; }
+        .info { background: #d1ecf1; border-left: 4px solid #17a2b8; }
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #6c757d; cursor: not-allowed; }
+        .logs { background: #f8f9fa; padding: 15px; border-radius: 5px; font-family: monospace; font-size: 12px; max-height: 300px; overflow-y: auto; }
+        .form-group { margin: 10px 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Test Complet du Processus de Commande Visio</h1>
+        
+        <div class="step info">
+            <h3>📋 Instructions</h3>
+            <p>Ce test simule le processus complet de commande côté frontend.</p>
+            <p><strong>Prérequis :</strong></p>
+            <ul>
+                <li>Backend Django sur <code>http://127.0.0.1:8000</code></li>
+                <li>Frontend React sur <code>http://localhost:3000</code></li>
+                <li>Console du navigateur ouverte (F12)</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>🏃‍♂️ Étapes du Test</h3>
+            
+            <div class="form-group">
+                <button onclick="testHealthCheck()">1. Test Health Check</button>
+                <span id="health-status">⏳</span>
+            </div>
+
+            <div class="form-group">
+                <button onclick="testAuthentication()">2. Test Authentification</button>
+                <span id="auth-status">⏳</span>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email de test :</label>
+                <input type="email" id="email" value="test2@example.com">
+                <label for="password">Mot de passe :</label>
+                <input type="password" id="password" value="testpass123">
+            </div>
+
+            <div class="form-group">
+                <button onclick="testCreateOrder()" id="order-btn" disabled>3. Test Création Commande</button>
+                <span id="order-status">⏳</span>
+            </div>
+
+            <div class="form-group">
+                <button onclick="testPayment()" id="payment-btn" disabled>4. Test Initiation Paiement</button>
+                <span id="payment-status">⏳</span>
+            </div>
+
+            <div class="form-group">
+                <button onclick="clearLogs()">🗑️ Effacer les Logs</button>
+                <button onclick="runAllTests()">🚀 Exécuter Tous les Tests</button>
+            </div>
+        </div>
+
+        <div class="step">
+            <h3>📊 Logs et Résultats</h3>
+            <div id="logs" class="logs">
+                🔍 Prêt pour les tests...<br>
+            </div>
+        </div>
+
+        <div class="step warning">
+            <h3>⚠️ Si des erreurs apparaissent</h3>
+            <ol>
+                <li><strong>Erreur CORS :</strong> Vérifiez que le backend autorise localhost:3000</li>
+                <li><strong>Erreur 401 :</strong> Problème d'authentification (token expiré)</li>
+                <li><strong>Erreur 404 :</strong> Endpoint non trouvé (vérifiez l'URL du backend)</li>
+                <li><strong>Erreur 500 :</strong> Erreur serveur (vérifiez les logs Django)</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8000/api';
+        let authToken = null;
+        let orderId = null;
+
+        function log(message, type = 'info') {
+            const logs = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            const emoji = type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️';
+            logs.innerHTML += `[${timestamp}] ${emoji} ${message}<br>`;
+            logs.scrollTop = logs.scrollHeight;
+            console.log(`${emoji} ${message}`);
+        }
+
+        function updateStatus(elementId, status, success = true) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = success ? '✅' : '❌';
+            element.title = status;
+        }
+
+        async function testHealthCheck() {
+            log('🏥 Test du Health Check...', 'info');
+            
+            try {
+                const response = await fetch('http://127.0.0.1:8000/health/');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    log(`Health Check réussi: ${JSON.stringify(data)}`, 'success');
+                    updateStatus('health-status', 'Succès', true);
+                    return true;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                log(`Health Check échoué: ${error.message}`, 'error');
+                updateStatus('health-status', 'Échec', false);
+                return false;
+            }
+        }
+
+        async function testAuthentication() {
+            log('🔐 Test de l\'authentification...', 'info');
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch(`${API_URL}/auth/login/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    authToken = data.access;
+                    log(`Authentification réussie pour ${email}`, 'success');
+                    log(`Token reçu: ${authToken.substring(0, 30)}...`, 'info');
+                    updateStatus('auth-status', 'Succès', true);
+                    
+                    // Activer les boutons suivants
+                    document.getElementById('order-btn').disabled = false;
+                    return true;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${JSON.stringify(data)}`);
+                }
+            } catch (error) {
+                log(`Authentification échouée: ${error.message}`, 'error');
+                updateStatus('auth-status', 'Échec', false);
+                return false;
+            }
+        }
+
+        async function testCreateOrder() {
+            log('🛒 Test de création de commande...', 'info');
+
+            if (!authToken) {
+                log('Pas de token d\'authentification! Exécutez d\'abord le test d\'authentification.', 'error');
+                return false;
+            }
+
+            const orderData = {
+                shipping_name: "Test Frontend User",
+                shipping_phone: "221700000002",
+                shipping_address: "123 Frontend Test Address",
+                shipping_city: "Dakar",
+                shipping_country: "Sénégal",
+                notes: "Commande de test frontend",
+                items: [
+                    { product_id: 1, quantity: 1 }
+                ]
+            };
+
+            log(`Données de commande: ${JSON.stringify(orderData)}`, 'info');
+
+            try {
+                const response = await fetch(`${API_URL}/orders/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    orderId = data.id;
+                    log(`Commande créée avec succès! ID: ${orderId}, Référence: ${data.reference}`, 'success');
+                    log(`Total: ${data.total} ${data.currency}`, 'info');
+                    updateStatus('order-status', 'Succès', true);
+                    
+                    // Activer le bouton de paiement
+                    document.getElementById('payment-btn').disabled = false;
+                    return true;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${JSON.stringify(data)}`);
+                }
+            } catch (error) {
+                log(`Création de commande échouée: ${error.message}`, 'error');
+                updateStatus('order-status', 'Échec', false);
+                return false;
+            }
+        }
+
+        async function testPayment() {
+            log('💳 Test d\'initiation de paiement...', 'info');
+
+            if (!authToken || !orderId) {
+                log('Token d\'authentification ou ID de commande manquant!', 'error');
+                return false;
+            }
+
+            const paymentData = {
+                order_id: orderId,
+                method: 'wave',
+                phone_number: '221700000002'
+            };
+
+            log(`Données de paiement: ${JSON.stringify(paymentData)}`, 'info');
+
+            try {
+                const response = await fetch(`${API_URL}/payments/initiate/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(paymentData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    log(`Paiement initié avec succès!`, 'success');
+                    log(`Transaction ID: ${data.transaction_id}`, 'info');
+                    log(`Message: ${data.message}`, 'info');
+                    
+                    if (data.payment_url) {
+                        log(`URL de paiement: ${data.payment_url}`, 'info');
+                        log('🔀 Redirection vers Paytech simulée (URL de paiement trouvée)', 'warning');
+                    } else {
+                        log('✅ Paiement simulé avec succès (pas de redirection)', 'success');
+                    }
+                    
+                    updateStatus('payment-status', 'Succès', true);
+                    return true;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${JSON.stringify(data)}`);
+                }
+            } catch (error) {
+                log(`Initiation de paiement échouée: ${error.message}`, 'error');
+                updateStatus('payment-status', 'Échec', false);
+                return false;
+            }
+        }
+
+        async function runAllTests() {
+            log('🚀 Exécution de tous les tests...', 'info');
+            
+            const health = await testHealthCheck();
+            if (!health) return;
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const auth = await testAuthentication();
+            if (!auth) return;
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const order = await testCreateOrder();
+            if (!order) return;
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const payment = await testPayment();
+            
+            if (payment) {
+                log('🎉 TOUS LES TESTS SONT PASSÉS! Le processus de commande fonctionne.', 'success');
+            } else {
+                log('❌ Certains tests ont échoué. Vérifiez les erreurs ci-dessus.', 'error');
+            }
+        }
+
+        function clearLogs() {
+            document.getElementById('logs').innerHTML = '🗑️ Logs effacés...<br>';
+            
+            // Reset status
+            document.getElementById('health-status').innerHTML = '⏳';
+            document.getElementById('auth-status').innerHTML = '⏳';
+            document.getElementById('order-status').innerHTML = '⏳';
+            document.getElementById('payment-status').innerHTML = '⏳';
+            
+            // Reset state
+            authToken = null;
+            orderId = null;
+            document.getElementById('order-btn').disabled = true;
+            document.getElementById('payment-btn').disabled = true;
+        }
+
+        // Test automatique au chargement de la page
+        window.addEventListener('load', () => {
+            log('🔍 Page de test chargée. Cliquez sur "Exécuter Tous les Tests" pour commencer.', 'info');
+        });
+    </script>
+</body>
+</html>

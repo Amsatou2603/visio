@@ -226,3 +226,11 @@ PAYTECH_ENV = os.environ.get('PAYTECH_ENV', 'sandbox')
 # URLs externes
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
 BACKEND_URL = os.environ.get('BACKEND_URL', 'http://127.0.0.1:8000')
+
+# Configuration de logging pour débugger les paiements
+if DEBUG:
+    LOGGING['loggers']['payments'] = {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+        'propagate': False,
+    }
