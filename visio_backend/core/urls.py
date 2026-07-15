@@ -1,7 +1,12 @@
+# pyrefly: ignore [missing-import]
 from django.contrib import admin
+# pyrefly: ignore [missing-import]
 from django.urls import path, include
+# pyrefly: ignore [missing-import]
 from django.conf import settings
+# pyrefly: ignore [missing-import]
 from django.conf.urls.static import static
+# pyrefly: ignore [missing-import]
 from django.http import HttpResponse, JsonResponse
 
 def simple_sitemap(request):
@@ -28,6 +33,7 @@ urlpatterns = [
     path('api/payments/', include('payments.urls')),
     path('api/reviews/', include('reviews.urls')),
     path('api/notifications/', include('notifications.urls')),
+    path('api/chatbot/', include('chatbot.urls')),
     path('sitemap.xml', simple_sitemap, name='sitemap'),
 ]
 

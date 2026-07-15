@@ -13,6 +13,7 @@ import CartDrawer from './components/CartDrawer';
 import Loader from './components/Loader';
 import StarField from './components/StarField';
 import WhatsAppCTA from './components/WhatsAppCTA';
+import ChatbotCTA from './components/ChatbotCTA';
 import SplashScreen from './components/SplashScreen';
 import PageTransition from './components/PageTransition';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -96,6 +97,7 @@ const AppContent = () => {
       </main>
       {showFooter && <Footer />}
       <WhatsAppCTA phone="+221770000000" />
+      <ChatbotCTA />
     </div>
   );
 };

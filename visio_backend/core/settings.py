@@ -7,6 +7,21 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load .env file manually if it exists (avoids dependency on python-dotenv)
+env_path = BASE_DIR / '.env'
+if env_path.exists():
+    try:
+        with open(env_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#') and '=' in line:
+                    key, val = line.split('=', 1)
+                    val = val.strip().strip("'").strip('"')
+                    os.environ[key.strip()] = val
+    except Exception as e:
+        pass
+
+
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-dev-key-123')
 
 DJANGO_ENV = os.environ.get('DJANGO_ENV', 'development')
@@ -72,6 +87,7 @@ INSTALLED_APPS = [
     'payments',
     'reviews',
     'notifications',
+    'chatbot',
 ]
 
 MIDDLEWARE = [
@@ -226,6 +242,9 @@ PAYTECH_ENV = os.environ.get('PAYTECH_ENV', 'sandbox')
 # URLs externes
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
 BACKEND_URL = os.environ.get('BACKEND_URL', 'http://127.0.0.1:8000')
+
+# Gemini API Key for Chatbot
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
 
 # Configuration de logging pour débugger les paiements
 if DEBUG:

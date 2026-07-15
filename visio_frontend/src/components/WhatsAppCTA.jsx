@@ -9,7 +9,7 @@ const WhatsAppCTA = ({ phone = '+221770000000', message = 'Bonjour, je suis int√
       target="_blank"
       rel="noopener noreferrer"
       style={{
-        position: 'fixed', bottom: 24, right: 24,
+        position: 'fixed', bottom: 24, left: 24,
         width: 56, height: 56, borderRadius: '50%',
         background: '#25d366',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
