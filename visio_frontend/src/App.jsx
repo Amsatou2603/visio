@@ -17,6 +17,7 @@ import ChatbotCTA from './components/ChatbotCTA';
 import SplashScreen from './components/SplashScreen';
 import PageTransition from './components/PageTransition';
 import ErrorBoundary from './components/ErrorBoundary';
+import CustomCursor from './components/CustomCursor';
 
 const Home = React.lazy(() => import('./pages/Home'));
 const Catalogue = React.lazy(() => import('./pages/Catalogue'));
@@ -132,6 +133,7 @@ const App = () => {
                 <BrowserRouter>
                   <div className="page-bg" />
                   <StarField />
+                  <CustomCursor />
                   <ErrorBoundary>
                     <AppContent />
                   </ErrorBoundary>

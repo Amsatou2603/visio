@@ -5,6 +5,7 @@ import SEOHead from '../components/SEOHead';
 import Loader from '../components/Loader';
 import ProductCard from '../components/ProductCard';
 import AuthModal from '../components/AuthModal';
+import { useScrollAnimation, useStaggerAnimation } from '../components/ScrollAnimations';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
@@ -25,6 +26,11 @@ const ProductDetail = () => {
   const [reviewError, setReviewError] = useState('');
   const [similar, setSimilar] = useState([]);
   const [showAuth, setShowAuth] = useState(false);
+
+  // Animation refs
+  const productInfoRef = useScrollAnimation({ animationClass: 'scroll-reveal-slide-left' });
+  const productImageRef = useScrollAnimation({ animationClass: 'scroll-reveal-slide-right' });
+  const similarRef = useStaggerAnimation({ staggerDelay: 100 });
 
   const inCart = product ? isInCart(product.id) : false;
   const cartItem = product ? items.find(i => i.id === product.id) : null;

@@ -4,6 +4,7 @@ import { Search, SlidersHorizontal, X, ArrowLeft } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import ProductCard from '../components/ProductCard';
 import Loader from '../components/Loader';
+import { useScrollAnimation, useStaggerAnimation } from '../components/ScrollAnimations';
 import api from '../services/api';
 
 const Catalogue = () => {
@@ -17,6 +18,10 @@ const Catalogue = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Animation refs
+  const headerRef = useScrollAnimation({ animationClass: 'scroll-reveal-fade-up' });
+  const productsGridRef = useStaggerAnimation({ staggerDelay: 80 });
 
   const [filters, setFilters] = useState({
     search: searchParams.get('search') || '',
@@ -405,7 +410,7 @@ const Catalogue = () => {
               </div>
             ) : (
               <>
-                <div style={{
+                <div ref={productsGridRef} style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
                   gap: 16,

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Search, Store, Package, Star, ArrowLeft } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import Loader from '../components/Loader';
+import { useScrollAnimation, useStaggerAnimation } from '../components/ScrollAnimations';
 import api from '../services/api';
 
 const Partenaires = () => {
@@ -10,6 +11,10 @@ const Partenaires = () => {
   const [sellers, setSellers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+
+  // Animation refs
+  const headerRef = useScrollAnimation({ animationClass: 'scroll-reveal-fade-up' });
+  const sellersGridRef = useStaggerAnimation({ staggerDelay: 100 });
 
   useEffect(() => {
     const fetchSellers = async () => {
@@ -127,7 +132,7 @@ const Partenaires = () => {
             )}
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
+          <div ref={sellersGridRef} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
             {filtered.map(seller => (
               <div key={seller.id} style={{
                 background: 'rgba(255,255,255,0.04)',

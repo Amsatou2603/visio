@@ -806,6 +806,187 @@
 .animate-slide-up { animation: slideUp 0.35s ease forwards; }
 
 /* =============================================
+   SCROLL ANIMATIONS
+   ============================================= */
+
+/* Initial hidden state */
+.scroll-hidden {
+  opacity: 0;
+}
+
+/* Fade Up Animation */
+.scroll-reveal-fade-up {
+  animation: scrollFadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes scrollFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade In Animation */
+.scroll-reveal-fade {
+  animation: scrollFade 0.8s ease-out forwards;
+}
+
+@keyframes scrollFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Scale Up Animation */
+.scroll-reveal-scale {
+  animation: scrollScale 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes scrollScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Slide From Left */
+.scroll-reveal-slide-left {
+  animation: scrollSlideLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes scrollSlideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide From Right */
+.scroll-reveal-slide-right {
+  animation: scrollSlideRight 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes scrollSlideRight {
+  from {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Flip Animation */
+.scroll-reveal-flip {
+  animation: scrollFlip 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transform-style: preserve-3d;
+}
+
+@keyframes scrollFlip {
+  from {
+    opacity: 0;
+    transform: perspective(800px) rotateY(-30deg);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(800px) rotateY(0);
+  }
+}
+
+/* Stagger Animation (for children) */
+.scroll-reveal-stagger {
+  animation: scrollFadeUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Blur In Animation */
+.scroll-reveal-blur {
+  animation: scrollBlur 0.8s ease-out forwards;
+}
+
+@keyframes scrollBlur {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* Rotate In Animation */
+.scroll-reveal-rotate {
+  animation: scrollRotate 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes scrollRotate {
+  from {
+    opacity: 0;
+    transform: rotate(-10deg) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+}
+
+/* Bounce In Animation */
+.scroll-reveal-bounce {
+  animation: scrollBounce 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes scrollBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.9);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .scroll-hidden {
+    opacity: 1;
+  }
+}
+
+/* =============================================
    RESPONSIVE UTILITAIRES
    ============================================= */
 @media (max-width: 768px) {

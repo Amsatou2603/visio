@@ -4,6 +4,7 @@ import { ArrowRight, Shield, Truck, Headphones } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import ProductCard from '../components/ProductCard';
 import Loader from '../components/Loader';
+import { useScrollAnimation, useStaggerAnimation } from '../components/ScrollAnimations';
 import api from '../services/api';
 import { formatPrice } from '../utils/formatPrice';
 
@@ -12,6 +13,14 @@ const Home = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deckIndex, setDeckIndex] = useState(0);
+
+  // Animation refs
+  const heroRef = useScrollAnimation({ animationClass: 'scroll-reveal-fade-up' });
+  const advantagesRef = useStaggerAnimation({ staggerDelay: 150 });
+  const categoriesRef = useStaggerAnimation({ staggerDelay: 100 });
+  const productsRef = useStaggerAnimation({ staggerDelay: 80 });
+  const deckRef = useScrollAnimation({ animationClass: 'scroll-reveal-scale' });
+  const ctaRef = useScrollAnimation({ animationClass: 'scroll-reveal-bounce' });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -79,7 +88,7 @@ const Home = () => {
       />
 
       {/* HERO */}
-      <section style={{ position: 'relative', overflow: 'hidden', padding: '80px 0 60px' }}>
+      <section ref={heroRef} style={{ position: 'relative', overflow: 'hidden', padding: '80px 0 60px' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div style={{ maxWidth: 640 }}>
             <div style={{
@@ -135,7 +144,7 @@ const Home = () => {
       {/* AVANTAGES */}
       <section style={{ padding: '40px 0' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div style={{
+          <div ref={advantagesRef} style={{
             display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16,
           }}>
             {[
@@ -185,7 +194,7 @@ const Home = () => {
                 Voir tout <ArrowRight style={{ width: 16, height: 16 }} />
               </Link>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 14 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 14 }} ref={categoriesRef}>
               {categories.slice(0, 4).map((cat, i) => {
                 const emojis = ['📱', '🎧', '💻', '⌚'];
                 return (
@@ -236,7 +245,7 @@ const Home = () => {
               <Link to="/catalogue" className="btn-primary" style={{ marginTop: 16, display: 'inline-flex' }}>Voir le catalogue</Link>
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 20 }}>
+            <div ref={productsRef} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 20 }}>
               {featured.map(product => (
                 <ProductCard key={product.id} product={product} />
               ))}
@@ -246,7 +255,7 @@ const Home = () => {
       </section>
 
       {/* DECK SECTION */}
-      <section className="deck-section">
+      <section className="deck-section" ref={deckRef}>
         <div className="deck-wrapper">
           {/* Texte */}
           <div className="deck-text" style={{ maxWidth: 440 }}>
@@ -343,7 +352,7 @@ const Home = () => {
       {/* CTA vendeur */}
       <section style={{ padding: '80px 0' }}>
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <div style={{
+          <div ref={ctaRef} style={{
             padding: '60px 40px',
             background: 'var(--bg-card)',
             border: '1.5px solid var(--border-red)',
