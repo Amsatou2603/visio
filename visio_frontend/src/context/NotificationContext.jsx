@@ -1,30 +1,48 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import api from '../services/api';
+import { useAuth } from './AuthContext';
 
 const NotificationContext = createContext(null);
 
 export const NotificationProvider = ({ children }) => {
+  const { isAuthenticated } = useAuth();
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
 
   // Fetch notifications
   const fetchNotifications = async () => {
+    // Ne fetch que si authentifié
+    if (!isAuthenticated) {
+      setNotifications([]);
+      setUnreadCount(0);
+      return;
+    }
+
     try {
       const response = await api.get('/notifications/');
       setNotifications(response.data);
       setUnreadCount(response.data.filter(n => !n.is_read).length);
     } catch (error) {
-      console.error('Error fetching notifications:', error);
+      // Ignorer les erreurs 401 (non authentifié)
+      if (error.response?.status !== 401) {
+        console.error('Error fetching notifications:', error);
+      }
     }
   };
 
-  // Polling toutes les 10 secondes
+  // Polling toutes les 10 secondes, seulement si authentifié
   useEffect(() => {
+    if (!isAuthenticated) {
+      setNotifications([]);
+      setUnreadCount(0);
+      return;
+    }
+
     fetchNotifications();
     const interval = setInterval(fetchNotifications, 10000);
     return () => clearInterval(interval);
-  }, []);
+  }, [isAuthenticated]);
 
   // Mark notification as read
   const markAsRead = async (notificationId) => {
